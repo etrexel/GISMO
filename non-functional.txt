@@ -1,0 +1,10 @@
+Non-functional requirements
+
+The software shall use client-server organization consisting of a client-side UI and a server-side game processor.
+The user-interface portion of the software shall be written in HTML and JavaScript.
+The server portion of the software shall be written in Python / PHP.
+The software shall use HTTP POST requests for client-server communication, as well as communication with any external game AI components.
+The software shall transfer data using the JSON protocol. 
+
+
+The software shall be stateful   (is this a functional requirement?)
