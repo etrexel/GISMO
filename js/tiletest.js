@@ -1,10 +1,3 @@
-var game = new Phaser.Game(1000, 500, Phaser.AUTO, 'game', { preload: preload, create: create, update: update, render: render });
-
-function preload() {
-    game.load.tilemap('map', 'battlefield.csv', null, Phaser.Tilemap.CSV);
-    game.load.image('tiles', 'img/terrain_small.png');
-}
-
 var map;
 var layer;
 var cursors;
@@ -12,6 +5,13 @@ var tileSize = 8;
 var mapWidth = 250;
 var mapHeight = 250;
 var moveSpeed = 10;
+
+var game = new Phaser.Game(tileSize * mapWidth, tileSize * mapHeight, Phaser.AUTO, 'game', { preload: preload, create: create, update: update, render: render });
+
+function preload() {
+    game.load.tilemap('map', 'battlefield.csv', null, Phaser.Tilemap.CSV);
+    game.load.image('tiles', 'img/terrain_small.png');
+}
 
 function create() {
     map = game.add.tilemap('map', 8, 8);
