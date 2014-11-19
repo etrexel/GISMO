@@ -109,3 +109,18 @@ QUnit.test("Tank Class Test", function(assert){
     test_tank.hit(2);
     assert.equal(test_tank.canFire(), false, "canFire() False");
 });
+
+QUnit.test("Tile Class Test", function(assert){
+    var test_tile = new Tile(new Terrain("plain"));
+    assert.equal(test_tile.getTerrain().getType(), "plain", "getTerrain()");
+    assert.equal(test_tile.getUnit(), null, "getUnit() NULL");
+    test_tile.setUnit(new Blockhouse("red", new Location(5, 5)));
+    assert.equal(test_tile.getUnit().getType(), "Blockhouse", "getUnit() Blockhouse");
+    test_tile.setUnit(new Tank("red", new Location(5, 5), "N", "N"));
+    assert.equal(test_tile.getUnit().getType(), "Tank", "getUnit() Tank");
+    test_tile.clearUnit();
+    assert.equal(test_tile.getUnit(), null, "clearUnit()");
+    assert.equal(test_tile.hasSmoke(), false, "hasSmoke()");
+    test_tile.setSmoke(true);
+    assert.equal(test_tile.hasSmoke(), true, "setSmoke()");
+});
