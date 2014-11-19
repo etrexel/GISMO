@@ -1,27 +1,31 @@
 var Tile = function(tile_terrain){
-	var terrain = tile_terrain;
-	var unit = null;
-	var smoke = false;
+	this.terrain = tile_terrain;
+	this.unit = null;
+	this.smoke = false;
+};
 
-	this.getTerrain = function(){
-		return terrain;
-	};
+Tile.prototype.getTerrain = function(){
+	return this.terrain;
+};
 
-	this.getUnit = function(){
-		if(unit)
-			return unit;
-		return null;
-	};
+Tile.prototype.getUnit = function(){
+	if(this.unit)
+		return this.unit;
+	return null;
+};
 
-	this.setUnit = function(new_unit){
-		unit = new_unit;
-	};
+Tile.prototype.setUnit = function(new_unit){
+	this.unit = new_unit;
+};
 
-	this.setSmoke = function(smokeVal){
-		smoke = smokeVal;
-	};
+Tile.prototype.clearUnit = function(){
+	this.unit = null;
+};
 
-	this.hasSmoke = function(){
-		return smoke;
-	};
+Tile.prototype.setSmoke = function(smokeVal){
+	this.smoke = smokeVal;
+};
+
+Tile.prototype.hasSmoke = function(){
+	return this.smoke;
 };

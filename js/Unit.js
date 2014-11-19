@@ -1,19 +1,28 @@
-var Unit = function(unit_team, unit_location){
-    var health;
-    var team = unit_team;
-    var location = unit_location;
+var Unit = function(unit_type, unit_faction, unit_location){
+    this.type = unit_type;
+    this.health = 0;
+    this.faction = unit_faction;
+    this.location = unit_location;
+};
 
-    this.getTeam = function(){
-        return team;
-    };
+Unit.prototype.getType = function(){
+    return this.type;
+}
 
-    this.getHealth = function(){
-        return health;
-    };
+Unit.prototype.getLocation = function(){
+    return this.location;
+};
 
-    this.hit = function(damage){
-        health = health - damage;
-        if(health < 0)
-            health = 0;
-    };
+Unit.prototype.getFaction = function(){
+    return this.faction;
+};
+
+Unit.prototype.getHealth = function(){
+    return this.health;
+};
+
+Unit.prototype.hit = function(damage){
+    this.health = this.health - damage;
+    if(this.health < 0)
+        this.health = 0;
 };

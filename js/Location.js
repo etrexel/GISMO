@@ -1,29 +1,29 @@
 var Location = function(xVal, yVal){
-    var x = xVal;
-    var y = yVal;
+    this.x = xVal;
+    this.y = yVal;
+};
 
-    this.setLocation = function(xVal, yVal){
-        x = xVal;
-        y = yVal;
-    };
+Location.prototype.setLocation = function(xVal, yVal){
+    this.x = xVal;
+    this.y = yVal;
+};
 
-    this.setX = function(xVal){
-        x = xVal;
-    };
+Location.prototype.setX = function(xVal){
+    this.x = xVal;
+};
 
-    this.setY = function(yVal){
-        y = yVal;
-    };
+Location.prototype.setY = function(yVal){
+    this.y = yVal;
+};
 
-    this.getX = function(){
-        return x;
-    };
+Location.prototype.getX = function(){
+    return this.x;
+};
 
-    this.getY = function(){
-        return y;
-    };
+Location.prototype.getY = function(){
+    return this.y;
+};
 
-    this.isEqual = function(loc){
-        return !!(loc.getX() == x && loc.getY() == y);
-    };
+Location.prototype.isEqual = function(loc){
+    return !!(loc.getX() == this.x && loc.getY() == this.y);
 };

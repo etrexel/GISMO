@@ -1,40 +1,40 @@
 var Terrain = function(terrain_type){
-    var type = terrain_type;
-    var move_into = false;
-    var see_thru = false;
-    var fire_thru = false;
+    this.type = terrain_type;
+    this.move_into = false;
+    this.see_thru = false;
+    this.fire_thru = false;
 
     if(terrain_type == "plain"){
-        move_into = true;
-        see_thru = true;
-        fire_thru = true;
+        this.move_into = true;
+        this.see_thru = true;
+        this.fire_thru = true;
     }
 
     if(terrain_type == "forest"){
-        move_into = true;
-        see_thru = false;
-        fire_thru = true;
+        this.move_into = true;
+        this.see_thru = false;
+        this.fire_thru = true;
     }
 
     if(terrain_type == "water"){
-        move_into = false;
-        see_thru = true;
-        fire_thru = true;
+        this.move_into = false;
+        this.see_thru = true;
+        this.fire_thru = true;
     }
+};
 
-    this.getType = function(){
-        return type;
-    };
+Terrain.prototype.getType = function(){
+    return this.type;
+};
 
-    this.canMove = function(){
-        return move_into;
-    };
+Terrain.prototype.canMove = function(){
+    return this.move_into;
+};
 
-    this.canFire = function(){
-        return fire_thru;
-    };
+Terrain.prototype.canFire = function(){
+    return this.fire_thru;
+};
 
-    this.canSee = function(){
-        return see_thru;
-    }
+Terrain.prototype.canSee = function(){
+    return this.see_thru;
 };
