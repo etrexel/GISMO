@@ -187,7 +187,9 @@ Tank.prototype.fire = function(){
     if(this.magazine > 0) {
         this.magazine--;
         this.rounds--;
+        return 1;
     }
+    return 0;
 };
 
 Tank.prototype.reload = function(){

@@ -91,8 +91,10 @@ QUnit.test("Tank Class Test", function(assert){
     test_tank.setTurret("N");
     assert.equal(test_tank.getTurret(), "N", "setTurret() High Edge");
     assert.equal(test_tank.gunReady(), true, "gunReady()");
+    var ret = test_tank.fire();
     test_tank.fire();
-    test_tank.fire();
+    assert.equal(true, ret, "fire() True");
+    assert.equal(test_tank.fire(), false, "fire() False");
     assert.equal(test_tank.gunReady(), false, "fire()");
     test_tank.reload();
     assert.equal(test_tank.gunReady(), true, "reload()");
@@ -385,3 +387,4 @@ QUnit.test("Tile Class Test", function(assert){
     test_tile.setSmoke(true);
     assert.equal(test_tile.hasSmoke(), true, "setSmoke()");
 });
+
