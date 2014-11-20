@@ -104,10 +104,271 @@ QUnit.test("Tank Class Test", function(assert){
     assert.equal(test_tank.gunReady(), false, "Out of Rounds");
     test_tank.setLocation(new_location.getX(), new_location.getY());
     assert.equal(test_tank.getLocation().isEqual(new_location), true, "setLocation()");
-    //TODO Test move()
     assert.equal(test_tank.canFire(), true, "canFire() True");
+    assert.equal(test_tank.isDestroyed(), false, "isDestroyed() False");
     test_tank.hit(2);
     assert.equal(test_tank.canFire(), false, "canFire() False");
+    assert.equal(test_tank.isDestroyed(), true, "isDestroyed() True");
+    //SPEED = 0
+    //W->S
+    test_tank = new Tank("red", new Location(10, 10), "W", "W");
+    test_tank.move("S");
+    assert.equal(test_tank.getHeading(), "S", "Speed 0 W->S Heading");
+    assert.equal(test_tank.getTurret(), "S", "Speed 0 W->S Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 W->S Coordinates");
+    //W->SW
+    test_tank = new Tank("red", new Location(10, 10), "W", "W");
+    test_tank.move("SW");
+    assert.equal(test_tank.getHeading(), "SW", "Speed 0 W->SW Heading");
+    assert.equal(test_tank.getTurret(), "SW", "Speed 0 W->SW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 W->SW Coordinates");
+    //W->NW
+    test_tank = new Tank("red", new Location(10, 10), "W", "W");
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 0 N->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed 0 N->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 N->NW Coordinates");
+    //W->N
+    test_tank = new Tank("red", new Location(10, 10), "W", "W");
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed 0 W->N Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 0 W->N Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 W->N Coordinates");
+    //NW->SW
+    test_tank = new Tank("red", new Location(10, 10), "NW", "NW");
+    test_tank.move("SW");
+    assert.equal(test_tank.getHeading(), "SW", "Speed 0 NW->SW Heading");
+    assert.equal(test_tank.getTurret(), "SW", "Speed 0 NW->SW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NW->SW Coordinates");
+    //NW->W
+    test_tank = new Tank("red", new Location(10, 10), "NW", "NW");
+    test_tank.move("W");
+    assert.equal(test_tank.getHeading(), "W", "Speed 0 NW->W Heading");
+    assert.equal(test_tank.getTurret(), "W", "Speed 0 NW->W Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NW->W Coordinates");
+    //NW->N
+    test_tank = new Tank("red", new Location(10, 10), "NW", "NW");
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed 0 NW->N Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 0 NW->N Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NW->N Coordinates");
+    //NW->NE
+    test_tank = new Tank("red", new Location(10, 10), "NW", "NW");
+    test_tank.move("NE");
+    assert.equal(test_tank.getHeading(), "NE", "Speed 0 NW->NE Heading");
+    assert.equal(test_tank.getTurret(), "NE", "Speed 0 NW->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NW->NE Coordinates");
+    //N->W
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.move("W");
+    assert.equal(test_tank.getHeading(), "W", "Speed 0 N->W Heading");
+    assert.equal(test_tank.getTurret(), "W", "Speed 0 N->W Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 N->W Coordinates");
+    //N->NW
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 0 N->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed 0 N->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 N->NW Coordinates");
+    //N->NE
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.move("NE");
+    assert.equal(test_tank.getHeading(), "NE", "Speed 0 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "NE", "Speed 0 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 N->NE Coordinates");
+    //N->E
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.move("E");
+    assert.equal(test_tank.getHeading(), "E", "Speed 0 N->E Heading");
+    assert.equal(test_tank.getTurret(), "E", "Speed 0 N->E Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 N->E Coordinates");
+    //NE->NW
+    test_tank = new Tank("red", new Location(10, 10), "NE", "NE");
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 0 NE->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed 0 NE->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NE->NW Coordinates");
+    //NE->N
+    test_tank = new Tank("red", new Location(10, 10), "NE", "NE");
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed 0 NE->N Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 0 NE->N Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NE->N Coordinates");
+    //NE->E
+    test_tank = new Tank("red", new Location(10, 10), "NE", "NE");
+    test_tank.move("E");
+    assert.equal(test_tank.getHeading(), "E", "Speed 0 NE->E Heading");
+    assert.equal(test_tank.getTurret(), "E", "Speed 0 NE->E Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NE->E Coordinates");
+    //NE->SE
+    test_tank = new Tank("red", new Location(10, 10), "NE", "NE");
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed 0 NE->SE Heading");
+    assert.equal(test_tank.getTurret(), "SE", "Speed 0 NE->SE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 NE->SE Coordinates");
+    //Separate Turret and Heading
+    test_tank = new Tank("red", new Location(10, 10), "S", "W");
+    test_tank.move("W");
+    assert.equal(test_tank.getHeading(), "W", "Speed 0 S->W Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 0 W->N Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 10)), true, "Speed 0 S->W Coordinates");
+    //SPEED = 1
+    //N->N
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed 1 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 1 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 9)), true, "Speed 1 N->NE Coordinates");
+    //N->NW
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 1 N->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed 1 N->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 9)), true, "Speed 1 N->NW Coordinates");
+    //N->NE
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.move("NE");
+    assert.equal(test_tank.getHeading(), "NE", "Speed 1 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "NE", "Speed 1 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 9)), true, "Speed 1 N->NE Coordinates");
+    //S->S
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.move("S");
+    assert.equal(test_tank.getHeading(), "S", "Speed 1 S->S Heading");
+    assert.equal(test_tank.getTurret(), "S", "Speed 1 S->S Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 11)), true, "Speed 1 S->S Coordinates");
+    //S->SW
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.move("SW");
+    assert.equal(test_tank.getHeading(), "SW", "Speed 1 S->SW Heading");
+    assert.equal(test_tank.getTurret(), "SW", "Speed 1 S->SW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 11)), true, "Speed 1 S->SW Coordinates");
+    //S->SE
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed 1 S->SE Heading");
+    assert.equal(test_tank.getTurret(), "SE", "Speed 1 S->SE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 11)), true, "Speed 1 S->SE Coordinates");
+    //Separate Turret and Heading
+    test_tank = new Tank("red", new Location(10, 10), "S", "SE");
+    test_tank.setSpeed(1);
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed 1 S->SE Heading");
+    assert.equal(test_tank.getTurret(), "E", "Speed 1 SE->E Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 11)), true, "Speed 1 S->SE Coordinates");
+    //SPEED = -1
+    //N->N
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(-1);
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed -1 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed -1 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 11)), true, "Speed -1 N->NE Coordinates");
+    //N->NW
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(-1);
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed -1 N->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed -1 N->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 11)), true, "Speed -1 N->NW Coordinates");
+    //N->NE
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(-1);
+    test_tank.move("NE");
+    assert.equal(test_tank.getHeading(), "NE", "Speed -1 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "NE", "Speed -1 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 11)), true, "Speed -1 N->NE Coordinates");
+    //S->S
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(-1);
+    test_tank.move("S");
+    assert.equal(test_tank.getHeading(), "S", "Speed -1 S->S Heading");
+    assert.equal(test_tank.getTurret(), "S", "Speed -1 S->S Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 9)), true, "Speed -1 S->S Coordinates");
+    //S->SW
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(-1);
+    test_tank.move("SW");
+    assert.equal(test_tank.getHeading(), "SW", "Speed -1 S->SW Heading");
+    assert.equal(test_tank.getTurret(), "SW", "Speed -1 S->SW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 9)), true, "Speed -1 S->SW Coordinates");
+    //S->SE
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(-1);
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed -1 S->SE Heading");
+    assert.equal(test_tank.getTurret(), "SE", "Speed -1 S->SE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 9)), true, "Speed -1 S->SE Coordinates");
+    //Separate Turret and Heading
+    test_tank = new Tank("red", new Location(10, 10), "E", "W");
+    test_tank.setSpeed(-1);
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed -1 E->SE Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed -1 W->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 9)), true, "Speed -1 E->SE Coordinates");
+    //SPEED = 2
+    //N->N
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("N");
+    assert.equal(test_tank.getHeading(), "N", "Speed 2 N->N Heading");
+    assert.equal(test_tank.getTurret(), "N", "Speed 2 N->N Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 8)), true, "Speed 2 N->N Coordinates");
+    //N->NW
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 2 N->NW Heading");
+    assert.equal(test_tank.getTurret(), "NW", "Speed 2 N->NW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 8)), true, "Speed 2 N->NW Coordinates");
+    //N->NE
+    test_tank = new Tank("red", new Location(10, 10), "N", "N");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("NE");
+    assert.equal(test_tank.getHeading(), "NE", "Speed 2 N->NE Heading");
+    assert.equal(test_tank.getTurret(), "NE", "Speed 2 N->NE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 8)), true, "Speed 2 N->NE Coordinates");
+    //S->S
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("S");
+    assert.equal(test_tank.getHeading(), "S", "Speed 2 S->S Heading");
+    assert.equal(test_tank.getTurret(), "S", "Speed 2 S->S Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(10, 12)), true, "Speed 2 S->S Coordinates");
+    //S->SW
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("SW");
+    assert.equal(test_tank.getHeading(), "SW", "Speed 2 S->SW Heading");
+    assert.equal(test_tank.getTurret(), "SW", "Speed 2 S->SW Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(9, 12)), true, "Speed 2 S->SW Coordinates");
+    //S->SE
+    test_tank = new Tank("red", new Location(10, 10), "S", "S");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("SE");
+    assert.equal(test_tank.getHeading(), "SE", "Speed 2 S->SE Heading");
+    assert.equal(test_tank.getTurret(), "SE", "Speed 2 S->SE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(11, 12)), true, "Speed 2 S->SE Coordinates");
+    //Separate Turret and Heading
+    test_tank = new Tank("red", new Location(10, 10), "W", "E");
+    test_tank.setSpeed(1);
+    test_tank.setSpeed(2);
+    test_tank.move("NW");
+    assert.equal(test_tank.getHeading(), "NW", "Speed 2 W->NW Heading");
+    assert.equal(test_tank.getTurret(), "SE", "Speed 2 E->SE Turret");
+    assert.equal(test_tank.getLocation().isEqual(new Location(8, 9)), true, "Speed 2 W->NW Coordinates");
 });
 
 QUnit.test("Tile Class Test", function(assert){
