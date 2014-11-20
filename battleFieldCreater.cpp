@@ -6,38 +6,130 @@ using namespace std;
 int main () {
 	srand (time(NULL));
 	
-	ofstream myfile;
-	myfile.open ("battlefield.csv");
 	int randNum;
+	int mapSize = 250;
+	int map[mapSize][mapSize];
+	int growthSize = 4;
 
-	for(int y = 0; y <= 250; y++ ) {
-		for(int x = 0 ; x <= 250; x++ ) {
-			randNum = rand() % 100;
+    //plane = 0
+	//Tree = 1
+	//Water = 2
+	//Mountain = 3
 
-			//plane
-			if(randNum < 75) {
-				myfile << 0;
-			}
-			//Tree
-			if(randNum >= 75 && randNum < 85) {
-				myfile << 1;
-			}
-			//water
-			if(randNum >= 85 && randNum < 95) {
-				myfile << 2;
-			}
-			//mountian
-			if(randNum >= 95 && randNum < 100) {
-				myfile << 3;
+
+	//seed
+	for(int y = 0; y < mapSize; y++ ) {
+		for(int x = 0 ; x < mapSize; x++ ) {
+			randNum = rand() % 1000;
+
+			
+			if(x == 0 || y == 0 || x == mapSize - 1 || y == mapSize - 1){
+				map[x][y] = 0;
+			} else if(randNum < 95) {
+				map[x][y] = 0;
+			} else if(randNum == 96 || randNum == 99) {
+				map[x][y] = 1;
+			} else if(randNum == 97) {
+				map[x][y] = 2;
+			} else if(randNum == 98) {
+				map[x][y] = 3;
+			} else {
+				map[x][y] = 0;
 			}
 
-				if(x != 250) {
-					myfile << ",";
+		}
+	}
+
+	//grow
+	for(int j = 0; j < growthSize; j++){
+		for(int y = 0; y < mapSize; y++ ) {
+			for(int x = 0 ; x < mapSize; x++ ) {
+				if(map[x][y] == 1){
+					map[x - rand() % 2][y - rand() % 2] = map[x][y];
+				}
+				if(map[x][y] == 2){
+					map[x][y - rand() % 2] = map[x][y];
+					map[x][y - rand() % 2] = map[x][y];
+				}
+				//if(map[x][y] == 3){
+				//	map[x - rand() % 2][y - rand() % 2] = map[x][y];
+				//}
+			}
+		}
+	}
+
+	//grow
+	for(int j = 0; j < growthSize; j++){
+		for(int y = mapSize - 1; y > 1; y-- ) {
+			for(int x = mapSize - 1; x > 1; x-- ) {
+				if(map[x][y] == 1){
+					map[x + rand() % 2][y + rand() % 2] = map[x][y];
+				}
+				if(map[x][y] == 2){
+					//cout << x + rand() % 2 << " ";
+					map[x][y + rand() % 2] = map[x][y];
+					map[x][y + rand() % 2] = map[x][y];
+
+				}
+				//if(map[x][y] == 3){
+				//	map[x + rand() % 2][y + rand() % 2] = map[x][y];
+				//}
+			}
+		}
+	}
+
+	//grow
+	for(int j = 0; j < growthSize; j++){
+		for(int y = 0; y < mapSize; y++ ) {
+			for(int x = mapSize - 1; x > 1; x-- ) {
+				if(map[x][y] == 1){
+					map[x + rand() % 2][y - rand() % 2] = map[x][y];
+				}
+				if(map[x][y] == 2){
+					//cout << x + rand() % 2 << " ";
+					map[x][y - rand() % 2] = map[x][y];
+
+				}
+				//if(map[x][y] == 3){
+				//	map[x + rand() % 2][y - rand() % 2] = map[x][y];
+				//}
+			}
+		}
+	}
+
+	//grow
+	for(int j = 0; j < growthSize; j++){
+		for(int y = mapSize - 1; y > 1; y-- ) {
+			for(int x = 0 ; x < mapSize; x++ ) {
+				if(map[x][y] == 1){
+					map[x - rand() % 2][y + rand() % 2] = map[x][y];
+				}
+				if(map[x][y] == 2){
+					//cout << x + rand() % 2 << " ";
+					map[x - rand() % 2][y + rand() % 2] = map[x][y];
+
+				}
+				if(map[x][y] == 3){
+					map[x - rand() % 2][y + rand() % 2] = map[x][y];
 				}
 			}
-			myfile << "\n";
 		}
-
-		myfile.close();
-		return 0;
 	}
+
+	ofstream myfile;
+	myfile.open ("battlefield.csv");
+
+	for(int y = 0; y < mapSize; y++ ) {
+		for(int x = 0 ; x < mapSize; x++ ) {
+			myfile << map[x][y];
+
+			if(x != mapSize - 1) {
+				myfile << ",";
+			}
+		}
+		myfile << "\n";
+	}
+
+	myfile.close();
+	return 0;
+}
