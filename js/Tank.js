@@ -1,8 +1,8 @@
-var Tank = function(tank_faction, tank_location, tank_heading, tank_turret){
+var Tank = function (tank_faction, tank_location, tank_heading, tank_turret) {
     Unit.call(this, "Tank", tank_faction, tank_location);
     this.health = 2;
     this.speed = 0;
-    switch(tank_heading){
+    switch (tank_heading) {
         case "N":
             this.heading = 0;
             break;
@@ -31,7 +31,7 @@ var Tank = function(tank_faction, tank_location, tank_heading, tank_turret){
             this.heading = 0;
             break;
     }
-    switch(tank_turret){
+    switch (tank_turret) {
         case "N":
             this.turret = 0;
             break;
@@ -63,23 +63,26 @@ var Tank = function(tank_faction, tank_location, tank_heading, tank_turret){
 
 Tank.prototype = Object.create(Unit.prototype);
 
-Tank.prototype.getSpeed = function(){
+Tank.prototype.getSpeed = function () {
     return this.speed;
 };
 
-Tank.prototype.setSpeed = function(new_speed){
-    if(new_speed > this.speed)
-        this.speed++;
-    else
-        this.speed--;
-    if(this.speed < -1)
+Tank.prototype.setSpeed = function (new_speed) {
+    if (new_speed > this.speed) {
+        this.speed += 1;
+    } else {
+        this.speed -= 1;
+    }
+    if (this.speed < -1) {
         this.speed = -1;
-    if(this.speed > 2)
+    }
+    if (this.speed > 2) {
         this.speed = 2;
+    }
 };
 
-Tank.prototype.getTurret = function(){
-    switch(this.turret){
+Tank.prototype.getTurret = function () {
+    switch (this.turret) {
         case 0:
             return "N";
         case 1:
@@ -105,8 +108,8 @@ Tank.prototype.getTurret = function(){
  * if it is within 2 clicks of current turret
  * position
  */
-Tank.prototype.setTurret = function(new_turret){
-    switch(new_turret){
+Tank.prototype.setTurret = function (new_turret) {
+    switch (new_turret) {
         case "N":
             new_turret = 0;
             break;
@@ -134,31 +137,32 @@ Tank.prototype.setTurret = function(new_turret){
         default:
             return null;
     }
-    if(this.turret == 0){
-        if (new_turret == 7 || new_turret == 6 || new_turret == 1 || new_turret == 2)
+    if (this.turret === 0) {
+        if (new_turret === 7 || new_turret === 6 || new_turret === 1 || new_turret === 2) {
             this.turret = new_turret;
-    }
-    else if(this.turret == 1){
-        if (new_turret == 7 || new_turret == 0 || new_turret == 2 || new_turret == 3)
+        }
+    } else if (this.turret === 1) {
+        if (new_turret === 7 || new_turret === 0 || new_turret === 2 || new_turret === 3) {
             this.turret = new_turret;
-    }
-    else if(this.turret == 6){
-        if (new_turret == 4 || new_turret == 5 || new_turret == 7 || new_turret == 0)
+        }
+    } else if (this.turret === 6) {
+        if (new_turret === 4 || new_turret === 5 || new_turret === 7 || new_turret === 0) {
             this.turret = new_turret;
-    }
-    else if(this.turret == 7){
-        if (new_turret == 5 || new_turret == 6 || new_turret == 0 || new_turret == 1)
+        }
+    } else if (this.turret === 7) {
+        if (new_turret === 5 || new_turret === 6 || new_turret === 0 || new_turret === 1) {
             this.turret = new_turret;
-    }
-    else {
-        if(new_turret == (this.turret - 2) || new_turret == (this.turret - 1) ||
-            new_turret == (this.turret + 1) || new_turret == (this.turret + 2))
+        }
+    } else {
+        if (new_turret === (this.turret - 2) || new_turret === (this.turret - 1) ||
+            new_turret === (this.turret + 1) || new_turret === (this.turret + 2)) {
             this.turret = new_turret;
+        }
     }
 };
 
-Tank.prototype.getHeading = function(){
-    switch(this.heading){
+Tank.prototype.getHeading = function () {
+    switch (this.heading) {
         case 0:
             return "N";
         case 1:
@@ -179,360 +183,343 @@ Tank.prototype.getHeading = function(){
     return this.heading;
 };
 
-Tank.prototype.gunReady = function(){
+Tank.prototype.gunReady = function () {
     return this.magazine > 0;
 };
 
-Tank.prototype.fire = function(){
-    if(this.magazine > 0) {
-        this.magazine--;
-        this.rounds--;
+Tank.prototype.fire = function () {
+    if (this.magazine > 0) {
+        this.magazine -= 1;
+        this.rounds -= 1;
         return 1;
     }
     return 0;
 };
 
-Tank.prototype.reload = function(){
-    if(this.rounds > 0) {
-        this.magazine++;
-        if (this.magazine > 2)
+Tank.prototype.reload = function () {
+    if (this.rounds > 0) {
+        this.magazine += 1;
+        if (this.magazine > 2) {
             this.magazine = 2;
+        }
     }
 };
 
-Tank.prototype.setLocation = function(xVal, yVal){
+Tank.prototype.setLocation = function (xVal, yVal) {
     this.location.setX(xVal);
     this.location.setY(yVal);
 };
 
-Tank.prototype.canMove = function(){
+Tank.prototype.canMove = function () {
     return this.health > 1;
 };
 
-Tank.prototype.canFire = function(){
+Tank.prototype.canFire = function () {
     return this.health > 0;
 };
 
-Tank.prototype.move = function(new_heading){
-    switch(new_heading){
-    case "N":
-        new_heading = 0;
-        break;
-    case "NE":
-        new_heading = 1;
-        break;
-    case "E":
-        new_heading = 2;
-        break;
-    case "SE":
-        new_heading = 3;
-        break;
-    case "S":
-        new_heading = 4;
-        break;
-    case "SW":
-        new_heading = 5;
-        break;
-    case "W":
-        new_heading = 6;
-        break;
-    case "NW":
-        new_heading = 7;
-        break;
-    default:
-        return null;
+Tank.prototype.move = function (new_heading) {
+    switch (new_heading) {
+        case "N":
+            new_heading = 0;
+            break;
+        case "NE":
+            new_heading = 1;
+            break;
+        case "E":
+            new_heading = 2;
+            break;
+        case "SE":
+            new_heading = 3;
+            break;
+        case "S":
+            new_heading = 4;
+            break;
+        case "SW":
+            new_heading = 5;
+            break;
+        case "W":
+            new_heading = 6;
+            break;
+        case "NW":
+            new_heading = 7;
+            break;
+        default:
+            return null;
     }
-    if(this.canMove()){
+    if (this.canMove()) {
         var turret_move = 0;
-        if(this.speed == 2){
-            if(this.heading == 7 || this.heading == 0 || this.heading == 1){
+        if (this.speed === 2) {
+            if (this.heading === 7 || this.heading === 0 || this.heading === 1) {
                 this.location.setY(this.location.getY() - 1);
-                if(this.heading == 7)
+                if (this.heading === 7) {
                     this.location.setX(this.location.getX() - 1);
-                if(this.heading == 1)
+                }
+                if (this.heading === 1) {
                     this.location.setX(this.location.getX() + 1);
+                }
             }
-            if(this.heading == 5 || this.heading == 4 || this.heading == 3){
+            if (this.heading === 5 || this.heading === 4 || this.heading === 3) {
                 this.location.setY(this.location.getY() + 1);
-                if(this.heading == 5)
+                if (this.heading === 5) {
                     this.location.setX(this.location.getX() - 1);
-                if(this.heading == 3)
+                }
+                if (this.heading === 3) {
                     this.location.setX(this.location.getX() + 1);
+                }
             }
-            if(this.heading == 6)
+            if (this.heading === 6) {
                 this.location.setX(this.location.getX() - 1);
-            if(this.heading == 2)
+            }
+            if (this.heading === 2) {
                 this.location.setX(this.location.getX() + 1);
+            }
 
-            if (this.heading == 0) {
-                if(new_heading == 7){
+            if (this.heading === 0) {
+                if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 1){
+                } else if (new_heading === 1) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
-            }
-            else if (this.heading == 1) {
-                if(new_heading == 0){
+            } else if (this.heading === 1) {
+                if (new_heading === 0) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 2){
+                } else if (new_heading === 2) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
-            }
-            else if (this.heading == 6) {
-                if(new_heading == 5){
+            } else if (this.heading === 6) {
+                if (new_heading === 5) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 7){
+                } else if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
-            }
-            else if (this.heading == 7) {
-                if(new_heading == 6){
+            } else if (this.heading === 7) {
+                if (new_heading === 6) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 0){
+                } else if (new_heading === 0) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
-            }
-            else {
-                if(new_heading == (this.heading - 1)){
+            } else {
+                if (new_heading === (this.heading - 1)) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == (this.heading + 1)){
+                } else if (new_heading === (this.heading + 1)) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
             }
 
-            if(this.heading == 7 || this.heading == 0 || this.heading == 1){
+            if (this.heading === 7 || this.heading === 0 || this.heading === 1) {
                 this.location.setY(this.location.getY() - 1);
-                if(this.heading == 7)
+                if (this.heading === 7) {
                     this.location.setX(this.location.getX() - 1);
-                if(this.heading == 1)
+                }
+                if (this.heading === 1) {
                     this.location.setX(this.location.getX() + 1);
+                }
             }
-            if(this.heading == 5 || this.heading == 4 || this.heading == 3){
+            if (this.heading === 5 || this.heading === 4 || this.heading === 3) {
                 this.location.setY(this.location.getY() + 1);
-                if(this.heading == 5)
+                if (this.heading === 5) {
                     this.location.setX(this.location.getX() - 1);
-                if(this.heading == 3)
+                }
+                if (this.heading === 3) {
                     this.location.setX(this.location.getX() + 1);
+                }
             }
-            if(this.heading == 6)
+            if (this.heading === 6) {
                 this.location.setX(this.location.getX() - 1);
-            if(this.heading == 2)
+            }
+            if (this.heading === 2) {
                 this.location.setX(this.location.getX() + 1);
+            }
         }
 
-        if(this.speed == 1 || this.speed == -1){
-            if (this.heading == 0) {
-                if(new_heading == 7){
+        if (this.speed === 1 || this.speed === -1) {
+            if (this.heading === 0) {
+                if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = -1;
+                } else if (new_heading === 1) {
+                    this.heading = new_heading;
+                    turret_move = 1;
                 }
-                else if(new_heading == 1){
+            } else if (this.heading === 1) {
+                if (new_heading === 0) {
+                    this.heading = new_heading;
+                    turret_move = -1;
+                } else if (new_heading === 2) {
+                    this.heading = new_heading;
+                    turret_move = 1;
+                }
+            } else if (this.heading === 6) {
+                if (new_heading === 5) {
+                    this.heading = new_heading;
+                    turret_move = -1;
+                } else if (new_heading === 7) {
+                    this.heading = new_heading;
+                    turret_move = 1;
+                }
+            } else if (this.heading === 7) {
+                if (new_heading === 6) {
+                    this.heading = new_heading;
+                    turret_move = -1;
+                } else if (new_heading === 0) {
+                    this.heading = new_heading;
+                    turret_move = 1;
+                }
+            } else {
+                if (new_heading === (this.heading - 1)) {
+                    this.heading = new_heading;
+                    turret_move = -1;
+                } else if (new_heading === (this.heading + 1)) {
                     this.heading = new_heading;
                     turret_move = 1;
                 }
             }
-            else if (this.heading == 1) {
-                if(new_heading == 0){
-                    this.heading = new_heading;
-                    turret_move = -1;
-                }
-                else if(new_heading == 2){
-                    this.heading = new_heading;
-                    turret_move = 1;
-                }
-            }
-            else if (this.heading == 6) {
-                if(new_heading == 5){
-                    this.heading = new_heading;
-                    turret_move = -1;
-                }
-                else if(new_heading == 7){
-                    this.heading = new_heading;
-                    turret_move = 1;
-                }
-            }
-            else if (this.heading == 7) {
-                if(new_heading == 6){
-                    this.heading = new_heading;
-                    turret_move = -1;
-                }
-                else if(new_heading == 0){
-                    this.heading = new_heading;
-                    turret_move = 1;
-                }
-            }
-            else {
-                if(new_heading == (this.heading - 1)){
-                    this.heading = new_heading;
-                    turret_move = -1;
-                }
-                else if(new_heading == (this.heading + 1)){
-                    this.heading = new_heading;
-                    turret_move = 1;
-                }
-            }
-            if(this.heading == 7 || this.heading == 0 || this.heading == 1){
+            if (this.heading === 7 || this.heading === 0 || this.heading === 1) {
                 this.location.setY(this.location.getY() - this.speed);
-                if(this.heading == 7)
+                if (this.heading === 7) {
                     this.location.setX(this.location.getX() - this.speed);
-                if(this.heading == 1)
+                }
+                if (this.heading === 1) {
                     this.location.setX(this.location.getX() + this.speed);
+                }
             }
-            if(this.heading == 5 || this.heading == 4 || this.heading == 3){
+            if (this.heading === 5 || this.heading === 4 || this.heading === 3) {
                 this.location.setY(this.location.getY() + this.speed);
-                if(this.heading == 5)
+                if (this.heading === 5) {
                     this.location.setX(this.location.getX() - this.speed);
-                if(this.heading == 3)
+                }
+                if (this.heading === 3) {
                     this.location.setX(this.location.getX() + this.speed);
+                }
             }
-            if(this.heading == 6)
+            if (this.heading === 6) {
                 this.location.setX(this.location.getX() - this.speed);
-            if(this.heading == 2)
+            }
+            if (this.heading === 2) {
                 this.location.setX(this.location.getX() + this.speed);
+            }
         }
 
-        if(this.speed == 0) {
-            if (this.heading == 0) {
-                if(new_heading == 6){
+        if (this.speed === 0) {
+            if (this.heading === 0) {
+                if (new_heading === 6) {
                     this.heading = new_heading;
                     turret_move = -2;
-                }
-                else if(new_heading == 7){
+                } else if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 1){
+                } else if (new_heading === 1) {
                     this.heading = new_heading;
                     turret_move = 1;
-                }
-                else if(new_heading == 2){
+                } else if (new_heading === 2) {
                     this.heading = new_heading;
                     turret_move = 2;
                 }
-            }
-            else if (this.heading == 1) {
-                if(new_heading == 7){
+            } else if (this.heading === 1) {
+                if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = -2;
-                }
-                else if(new_heading == 0){
+                } else if (new_heading === 0) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 2){
+                } else if (new_heading === 2) {
                     this.heading = new_heading;
                     turret_move = 1;
-                }
-                else if(new_heading == 3){
+                } else if (new_heading === 3) {
                     this.heading = new_heading;
                     turret_move = 2;
                 }
-            }
-            else if (this.heading == 6) {
-                if(new_heading == 4){
+            } else if (this.heading === 6) {
+                if (new_heading === 4) {
                     this.heading = new_heading;
                     turret_move = -2;
-                }
-                else if(new_heading == 5){
+                } else if (new_heading === 5) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 7){
+                } else if (new_heading === 7) {
                     this.heading = new_heading;
                     turret_move = 1;
-                }
-                else if(new_heading == 0){
+                } else if (new_heading === 0) {
                     this.heading = new_heading;
                     turret_move = 2;
                 }
-            }
-            else if (this.heading == 7) {
-                if(new_heading == 5){
+            } else if (this.heading === 7) {
+                if (new_heading === 5) {
                     this.heading = new_heading;
                     turret_move = -2;
-                }
-                else if(new_heading == 6){
+                } else if (new_heading === 6) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == 0){
+                } else if (new_heading === 0) {
                     this.heading = new_heading;
                     turret_move = 1;
-                }
-                else if(new_heading == 1){
+                } else if (new_heading === 1) {
                     this.heading = new_heading;
                     turret_move = 2;
                 }
-            }
-            else {
-                if(new_heading == (this.heading - 2)){
+            } else {
+                if (new_heading === (this.heading - 2)) {
                     this.heading = new_heading;
                     turret_move = -2;
-                }
-                else if(new_heading == (this.heading - 1)){
+                } else if (new_heading === (this.heading - 1)) {
                     this.heading = new_heading;
                     turret_move = -1;
-                }
-                else if(new_heading == (this.heading + 1)){
+                } else if (new_heading === (this.heading + 1)) {
                     this.heading = new_heading;
                     turret_move = 1;
-                }
-                else if(new_heading == (this.heading + 2)){
+                } else if (new_heading === (this.heading + 2)) {
                     this.heading = new_heading;
                     turret_move = 2;
                 }
             }
         }
-        if(turret_move == 2){
-            if(this.turret == 7)
+
+        if (turret_move === 2) {
+            if (this.turret === 7) {
                 turret_move = 1;
-            else if(this.turret == 6)
+            } else if (this.turret === 6) {
                 turret_move = 0;
-            else
+            } else {
                 turret_move = this.turret + 2;
-        }
-        else if(turret_move == 1){
-            if(this.turret == 7)
+            }
+        } else if (turret_move === 1) {
+            if (this.turret === 7) {
                 turret_move = 0;
-            else
+            } else {
                 turret_move = this.turret + 1;
-        }
-        else if(turret_move == -1){
-            if(this.turret == 0)
+            }
+        } else if (turret_move === -1) {
+            if (this.turret === 0) {
                 turret_move = 7;
-            else
+            } else {
                 turret_move = this.turret - 1;
-        }
-        else if(turret_move == -2){
-            if(this.turret == 0)
+            }
+        } else if (turret_move === -2) {
+            if (this.turret === 0) {
                 turret_move = 6;
-            else if(this.turret == 1)
+            } else if (this.turret === 1) {
                 turret_move = 7;
-            else
+            } else {
                 turret_move = this.turret - 2;
-        }
-        else {
+            }
+        } else {
             turret_move = this.turret;
         }
         this.turret = turret_move;
     }
 };
 
-Tank.prototype.isDestroyed = function(){
+Tank.prototype.isDestroyed = function () {
     return this.health <= 0;
 };

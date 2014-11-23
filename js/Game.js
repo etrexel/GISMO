@@ -1,3 +1,3 @@
-var Game = function(){
-	console.log("Created Game");
+var Game = function () {
+    console.log("Created Game");
 };
