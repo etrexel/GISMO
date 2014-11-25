@@ -10,10 +10,22 @@ var Battlefield = function (first_faction, second_faction) {
     this.faction2Orders = "";
     this.faction1Reports = "";
     this.faction2Reports = "";
+
 };
 
 Battlefield.prototype.generateBattlefield = function () {
+    var boardSize = 250;
 
+    this.battlefield = Array(boardSize);
+    for(y = 0 ; y < boardSize ; y++ ) {
+        this.battlefield[y] = Array(boardSize);
+        for(x = 0 ; x < boardSize ; x++ ) {
+            var rand = Math.floor(Math.random() * 1000);
+            this.battlefield[y][x] = 0;
+        }
+    }
+
+    console.log(this.battlefield);
 };
 
 Battlefield.prototype.setupTeam = function (faction, json) {
