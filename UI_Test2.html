@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="js/jquery.mousewheel.min.js"></script>
-<script type="text/javascript" src="js/Battlefield.js"></script>
-<script type="text/javascript" src="js/boardData.js"></script>
-<script type="text/javascript" src="js/boardRender.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="js/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="js/Battlefield.js"></script>
+	<script type="text/javascript" src="js/boardData.js"></script>
+	<script type="text/javascript" src="js/boardRender.js"></script>
 
-<style>
-	.canvasContainer {
-		margin-top: 80px;
-		text-align: center;
-	}
-	body {
-		cursor: default;
-	}
-</style>
+	<link rel="stylesheet" type="text/css" href="style.css" />
 
 </head>
 <body>
-
-<div class="canvasContainer">
-	<canvas id="boardCanvas"></canvas>
-	<canvas id="mapCanvas"></canvas>
-</div>
+	<nav>
+		<div class="fraction">Team 1:</div>
+		<div id="gen">
+			<span id="move">0</span>
+		</div>
+		<div class="fraction">Team 2:</div>
+	</nav>
+	<div class="canvasContainer">
+		<canvas id="mapCanvas"></canvas>
+		<canvas id="boardCanvas"></canvas>
+	</div>
 
 </body>
 </html>
