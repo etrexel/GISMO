@@ -15,7 +15,8 @@ var tileInfo = {
 		"0": [0,0], // tile identifier and tile row,col position in image file
 		"1": [0,1],
 		"2": [0,2],
-		"3": [0,3]
+		"3": [0,3],
+		"4": [0,4]
 	}	
 };
 
@@ -23,7 +24,8 @@ var separateTileInfo = {
 	"0": "img/tiles/grass.png",
 	"1": "img/tiles/tree.png",
 	"2": "img/tiles/water.png",
-	"3": "img/tiles/mountain.png"
+	"3": "img/tiles/mountain.png",
+	"4": "img/tiles/tank.png"
 }
 
 var separateTileImages = {}

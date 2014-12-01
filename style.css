@@ -45,6 +45,11 @@ nav #gen {
 	margin-top: 30px;
 	z-index: 100;
 	box-shadow: 5px 5px 12px #000;
+	opacity: 0.5;
+}
+
+#mapCanvas:hover {
+	opacity: 0.9;
 }
 
 #boardCanvas {

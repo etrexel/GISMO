@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery.mousewheel.min.js"></script>
 	<script type="text/javascript" src="js/Battlefield.js"></script>
 	<script type="text/javascript" src="js/boardData.js"></script>
 	<script type="text/javascript" src="js/boardRender.js"></script>
+	<script type="text/javascript" src="js/Game.js"></script>
+	<script type="text/javascript" src="js/Fraction.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
@@ -24,4 +26,29 @@
 	</div>
 
 </body>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		var moveCount = 0;
+		var game = new Game();
+		
+		var fraction1 = new Fraction();
+		fraction1.setURl("http://localhost/GISMO/player1.php");
+		
+		var fraction2 = new Fraction();
+		fraction2.setURl("http://localhost/GISMO/player1.php");
+
+		console.log(fraction1.getStart());
+		fraction2.getStart();
+
+		//var tid = setTimeout(timer, 1000);
+		function timer() {
+			fraction1.getMove();
+			fraction2.getMove();
+			$("#move").html(moveCount++);
+			game.tick();
+			tid = setTimeout(timer, 1000);
+		}
+	});
+</script>
 </html>

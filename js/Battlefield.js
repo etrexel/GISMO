@@ -41,11 +41,14 @@ Battlefield.prototype.generateBattlefield = function () {
 			}
 		}
 	}
-	for(i = 0; i < 10; i++){
-		for(y = 2; y < boardSize; y ++){
-			for(x = 2; x < boardSize; x++){
+	for(i = 0; i < 2; i++){
+		for(y = 2; y < boardSize - 2; y ++){
+			for(x = 2; x < boardSize - 2; x++){
 				if(this.battlefield[x][y] != 0){
 					this.battlefield[x - Math.floor(Math.random() * 10) % 2 ][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
+					this.battlefield[x][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
+					this.battlefield[x + Math.floor(Math.random() * 10) % 2 ][y] = this.battlefield[x][y];
+					this.battlefield[x][y + Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
 				}
 			}
 		}
@@ -53,6 +56,11 @@ Battlefield.prototype.generateBattlefield = function () {
 };
 
 Battlefield.prototype.setupTeam = function (faction, json) {
+	var tankNumber = 7;
+
+	this.battlefield = Array(tankNumber);
+
+
 };
 
 Battlefield.prototype.tankReport = function (faction) {
