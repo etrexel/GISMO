@@ -41,8 +41,14 @@
 		console.log(fraction1.getStart());
 		fraction2.getStart();
 
-		//var tid = setTimeout(timer, 1000);
+		board[0][5] = 4;
+
+		var tid = setTimeout(timer, 1000);
 		function timer() {
+			board = b.prototype.battlefield;
+			
+			board[0][moveCount % 250] = 4;
+			startRendering();
 			fraction1.getMove();
 			fraction2.getMove();
 			$("#move").html(moveCount++);
