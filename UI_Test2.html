@@ -3,6 +3,9 @@
 <head>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="js/Unit.js"></script>
+	<script type="text/javascript" src="js/Tank.js"></script>
+	<script type="text/javascript" src="js/Location.js"></script>
 	<script type="text/javascript" src="js/Tile.js"></script>
 	<script type="text/javascript" src="js/Terrain.js"></script>
 	<script type="text/javascript" src="js/Battlefield.js"></script>
@@ -35,7 +38,7 @@
 
 		initBoard();
 
-		var moveCount = 0;
+		var moveCount = 1;
 		
 		
 		var Faction1 = new Faction();
@@ -54,7 +57,9 @@
 			//var temp = board[0][moveCount % 250];
 			board = b.battlefield;
 			//console.log(b.battlefield[0][(moveCount % 250) - 1].getType());
-			board[0][moveCount % 250];
+			var tempTank = new Tank("red", new Location(10, 10), "W", "W");
+			board[0][(moveCount % 250) - 1].clearUnit();
+			board[0][moveCount % 250].setUnit(tempTank );
 			//board[0][(moveCount % 250) - 1] = temp;
 			render();
 			Faction1.getMove();
