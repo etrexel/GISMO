@@ -14,22 +14,22 @@ QUnit.test("Location Class Test", function (assert) {
 });
 
 QUnit.test("Terrain Class Test", function (assert) {
-    var test_type = "plain";
+    var test_type = 0;
     var terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), true, "Plain Move");
     assert.equal(terrain.canSee(), true, "Plain See");
     assert.equal(terrain.canFire(), true, "Plain Fire");
-    test_type = "forest";
+    test_type = 1;
     terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), true, "Forest Move");
     assert.equal(terrain.canSee(), false, "Forest See");
     assert.equal(terrain.canFire(), true, "Forest Fire");
-    test_type = "water";
+    test_type = 2;
     terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), false, "Water Move");
     assert.equal(terrain.canSee(), true,"Water See");
     assert.equal(terrain.canFire(), true, "Water Fire");
-    test_type = "mountain";
+    test_type = 3;
     terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), false, "Mountain Move");
     assert.equal(terrain.canSee(), false,"Mountain See");
