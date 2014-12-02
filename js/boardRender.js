@@ -344,8 +344,6 @@ function render() {
 					var bodyImage = separateTileImages[color+"Body"+bodyMapping[0]];
 					var bodyRotation = bodyMapping[1];
 					
-					console.log(bodyImage);
-					
 					ctx.rotate(Math.PI/180*bodyRotation);
 					ctx.drawImage(bodyImage, (-0.5)*TILE_SIZE, (-0.5)*TILE_SIZE);
 					ctx.rotate(-Math.PI/180*bodyRotation);
