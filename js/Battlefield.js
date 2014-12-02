@@ -6,6 +6,8 @@ var Battlefield = function (first_faction, second_faction) {
 	this.faction2Base = "";
 	this.faction1Tanks = [];
 	this.faction2Tanks = [];
+    this.changedSpeed = [];
+    this.changedDirection = [];
 	this.faction1Orders = "";
 	this.faction2Orders = "";
 	this.faction1Reports = "";
@@ -266,4 +268,78 @@ Battlefield.prototype.tick = function () {
 	this.generateReports();
 	this.sendReports();
 	return null;
+};
+
+Battlefield.prototype.toHit = function (attacker, defender) {
+    var Dx = defender.getLocation().getX() - attacker.getLocation.getX();
+    var Dy = defender.getLocation().getY() - attacker.getLocation.getY();
+    var D = Dx*Dx + Dy*Dy;
+    var probability;
+    if (D > 100) {
+        return 0;
+    } else {
+        probability = Math.round(100 * Math.exp(-0.0003 * D) - 5);
+
+        switch (attacker.getSpeed()) {
+            case -1:
+            case 1:
+                probability = probability - 3;
+                break;
+            case 2:
+                probability = probability - 5;
+                break;
+            case 0:
+                break;
+            default:
+                break;
+        }
+
+        switch (defender.getSpeed()) {
+            case -1:
+            case 1:
+                probability = probability - 5;
+                break;
+            case 2:
+                probability = probability - 10;
+                break;
+            case 0:
+                break;
+            default:
+                break;
+        }
+
+        if (this.changedSpeed.contains(attacker)) {
+            probability = probability - 5;
+        }
+        if (this.changedDirection.contains(attacker)) {
+            probability = probability - 5;
+        }
+        if (this.changedSpeed.contains(defender)) {
+            probability = probability - 5;
+        }
+        if (this.changedDirection.contains(defender)) {
+            probability = probability - 5;
+        }
+
+        //TODO Add Direction of Impact
+        if (defender.getType() === "Tank") {
+            console.log("Add Direction of Impact");
+        }
+
+        if (probability < 0) {
+            probability = 0;
+        }
+        if (probability > 95) {
+            probability = 95;
+        }
+
+        var rand = Math.random() % 101;
+        if (rand <= probability) {
+            if (D >= 50) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    }
 };
