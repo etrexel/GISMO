@@ -67,15 +67,16 @@ Battlefield.prototype.tankReport = function (faction) {
 
 };
 
-Battlefield.prototype.objectReport = function (faction) {
+Battlefield.prototype.objectReport = function (faction) { /*
 	var tanks;
 	var enemyTanks;
-	if (faction == this.faction1)
+	if (faction == this.faction1) {
 		tanks = this.faction1Tanks;
 		enemyTanks = this.faction2Tanks;
-	else if (faction == this.faction2)
+	} else if (faction == this.faction2) {
 		tanks = this.faction2Tanks;
 		enemyTanks = this.faction1Tanks;
+	}
 	if (!tanks)
 		return; // invalid faction param
 	
@@ -219,7 +220,7 @@ Battlefield.prototype.objectReport = function (faction) {
 		if (unit) {
 			// add to report => unit at (x,y) seen by seenBy			
 		}			
-	}
+	} */
 };
 
 Battlefield.prototype.generateReports = function () {
