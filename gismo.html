@@ -34,12 +34,14 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var game = new Game();
-		game.init();
+				
+		var faction1Name = "red";
+		var faction2Name = "blue";
+		game.init(faction1Name, faction2Name);
 
 		initBoard();
 
 		var moveCount = 1;
-		
 		
 		var Faction1 = new Faction();
 		Faction1.setURl("http://localhost/GISMO/player1.php");
@@ -47,23 +49,24 @@
 		var Faction2 = new Faction();
 		Faction2.setURl("http://localhost/GISMO/player1.php");
 
-		console.log(Faction1.getStart());
-		Faction2.getStart();
+		//console.log(Faction1.getStart());
+		//Faction2.getStart();
 
 		//board[0][5] = 4;
 
 		var tid = setTimeout(timer, 1000);
 		function timer() {
 			//var temp = board[0][moveCount % 250];
-			board = b.battlefield;
-			//console.log(b.battlefield[0][(moveCount % 250) - 1].getType());
-			var tempTank = new Tank("red", new Location(10, 10), "W", "W");
+			//console.log(game.battlefield.battlefield[0][(moveCount % 250) - 1].getType());
+			var tempTank = new Tank(faction1Name, new Location(10, 10), "W", "W");
 			board[0][(moveCount % 250) - 1].clearUnit();
 			board[0][moveCount % 250].setUnit(tempTank );
 			//board[0][(moveCount % 250) - 1] = temp;
-			render();
-			Faction1.getMove();
-			Faction2.getMove();
+			
+			rerender = true;
+			
+			//Faction1.getMove();
+			//Faction2.getMove();
 			$("#move").html(moveCount++);
 			game.tick();
 			tid = setTimeout(timer, 1000);
