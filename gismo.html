@@ -34,12 +34,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var game = new Game();
-				
-		var faction1Name = "red";
-		var faction2Name = "blue";
+		
+		var faction1Name = "faction1";
+		var faction2Name = "faction2";
 		game.init(faction1Name, faction2Name);
-
-		initBoard();
+		var board = game.battlefield.battlefield;
+		
+		initBoard(game);
 
 		var moveCount = 1;
 		
@@ -58,7 +59,7 @@
 		function timer() {
 			//var temp = board[0][moveCount % 250];
 			//console.log(game.battlefield.battlefield[0][(moveCount % 250) - 1].getType());
-			var tempTank = new Tank(faction1Name, new Location(10, 10), "W", "W");
+			var tempTank = new Tank(faction1Name, new Location(10, 10), "E", "SE");
 			board[0][(moveCount % 250) - 1].clearUnit();
 			board[0][moveCount % 250].setUnit(tempTank );
 			//board[0][(moveCount % 250) - 1] = temp;

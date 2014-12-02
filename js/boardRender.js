@@ -85,7 +85,11 @@ var keys = {
 
 var rerender = false; // the board will be rerendered on the frame after this gets set to true
 
-function initBoard() {	
+var game;
+var board;
+function initBoard(gameRef) {
+	game = gameRef;
+	board = game.battlefield.battlefield;
 	boardW = board[0].length;
 	boardH = board.length;
 
@@ -308,7 +312,7 @@ function render() {
 				if (unit.getType() == "Blockhouse") {
 				
 				} else if (unit.getType() == "Tank") {
-					console.log("Drawing tank at ("+(x+left).toString()+", "+(y+top).toString()+")");
+					//console.log("Drawing tank at ("+(x+left).toString()+", "+(y+top).toString()+")");
 				
 					var heading = unit.getHeading();
 					var turret = unit.getTurret();
@@ -324,14 +328,13 @@ function render() {
 						"NW": ["Ortho", 270]
 					};
 					
-					/*
+					
 					var color;
 					if (unit.getFaction() == game.battlefield.faction1)
 						color = "red";
 					else
 						color = "blue";
-					*/
-					var color = "red";
+					
 					
 					ctx.save();
 					ctx.translate((x+left+0.5)*TILE_SIZE, (y+top+0.5)*TILE_SIZE);
@@ -341,8 +344,10 @@ function render() {
 					var bodyImage = separateTileImages[color+"Body"+bodyMapping[0]];
 					var bodyRotation = bodyMapping[1];
 					
+					console.log(bodyImage);
+					
 					ctx.rotate(Math.PI/180*bodyRotation);
-					ctx.drawImage(bodyImage, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+					ctx.drawImage(bodyImage, (-0.5)*TILE_SIZE, (-0.5)*TILE_SIZE);
 					ctx.rotate(-Math.PI/180*bodyRotation);
 						
 					// draw turret
@@ -351,7 +356,7 @@ function render() {
 					var turretRotation = turretMapping[1];
 					
 					ctx.rotate(Math.PI/180*turretRotation);
-					ctx.drawImage(bodyImage, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+					ctx.drawImage(turretImage, (-0.5)*TILE_SIZE, (-0.5)*TILE_SIZE);
 					ctx.rotate(-Math.PI/180*turretRotation);
 					
 					ctx.restore();
