@@ -62,18 +62,31 @@ Battlefield.prototype.generateBattlefield = function () {
 
 	for(y = 0; y < 10; y++ ) {
 		for(x = 0; x < 10; x++ ) {
-			this.battlefield[x][y] = new Tile(new Terrain(4));
+			this.battlefield[x][y] = new Tile(new Terrain(0));
 		}
 	}
 
 	for(y = 0; y < 10; y++ ) {
 		for(x = 0; x < 10; x++ ) {
-			this.battlefield[boardSize - x][boardSize - y] = new Tile(new Terrain(4));
+			this.battlefield[boardSize - x - 1][boardSize - y - 1] = new Tile(new Terrain(0));
 		}
 	}
 
-	this.battlefield[5][5] = new Tile(new Terrain(0));
-	this.battlefield[boardSize - 5][boardSize - 5] = new Tile(new Terrain(0));
+	var blockhouse1Tile = new Tile(new Terrain(0))
+	var blockhouse1Location = new Location(5, 5);
+	var blockhouse1 = new Blockhouse(this.faction1, blockhouse1Location);
+	blockhouse1Tile.setUnit(blockhouse1);
+
+	var blockhouse2Tile = new Tile(new Terrain(0))
+	var blockhouse2Location = new Location(boardSize - 5 - 1, boardSize - 5 - 1);
+	var blockhouse2 = new Blockhouse(this.faction2, blockhouse2Location);
+	blockhouse2Tile.setUnit(blockhouse2);
+	
+	this.battlefield[5][5] = blockhouse1Tile;
+	this.battlefield[boardSize - 5][boardSize - 5] = blockhouse2Tile;
+	
+	// smoke test
+	this.battlefield[0][7].setSmoke(true);
 };
 
 Battlefield.prototype.setupTeam = function (faction, json) {

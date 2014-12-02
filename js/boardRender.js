@@ -21,7 +21,10 @@ var separateTileInfo = {
 	"redBodyNormal": "img/red_body_normal.png",
 	"redBodyOrtho": "img/red_body_ortho.png",
 	"redTurretNormal": "img/red_turret_normal.png",
-	"redTurretOrtho": "img/red_turret_ortho.png"
+	"redTurretOrtho": "img/red_turret_ortho.png",
+	"blueBlockhouse": "img/blue_blockhouse.png",
+	"redBlockhouse": "img/red_blockhouse.png",
+	"smoke": "img/smoke.png"
 }
 
 var separateTileImages = {}
@@ -303,14 +306,21 @@ function render() {
 			
 			// draw terrain
 			var terrain = tile.terrain.getType(); 
-			var singleTileImg = separateTileImages[terrain.toString()];	
+			var singleTileImg = separateTileImages[terrain.toString()];
 			ctx.drawImage(singleTileImg, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
-			
 			// draw unit
 			var unit = tile.getUnit();
 			if (unit) {
 				if (unit.getType() == "Blockhouse") {
-				
+					var color;
+					if (unit.getFaction() == game.battlefield.faction1)
+						color = "red";
+					else
+						color = "blue";
+					
+					var blockhouseImage = separateTileImages[color+"Blockhouse"];			
+					ctx.drawImage(blockhouseImage, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+					
 				} else if (unit.getType() == "Tank") {
 					//console.log("Drawing tank at ("+(x+left).toString()+", "+(y+top).toString()+")");
 				
@@ -327,14 +337,12 @@ function render() {
 						"SW": ["Ortho", 180],
 						"NW": ["Ortho", 270]
 					};
-					
-					
+										
 					var color;
 					if (unit.getFaction() == game.battlefield.faction1)
 						color = "red";
 					else
-						color = "blue";
-					
+						color = "blue";					
 					
 					ctx.save();
 					ctx.translate((x+left+0.5)*TILE_SIZE, (y+top+0.5)*TILE_SIZE);
@@ -359,6 +367,12 @@ function render() {
 					
 					ctx.restore();
 				}
+			}
+			
+			// draw smoke
+			if (tile.hasSmoke()) {
+				var smokeImg = separateTileImages["smoke"];			
+				ctx.drawImage(smokeImg, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
 			}
 		}
 	}
