@@ -23,28 +23,30 @@ Battlefield.prototype.generateBattlefield = function () {
 			if(x > 2 && y > 2){
 				var rand = Math.floor(Math.random() * 1000);
 
+				
+
 				if(rand === 0 || rand === 1){
-					this.battlefield[y][x] = 1;
-					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = 1;
+					this.battlefield[y][x] =  new Tile(new Terrain(1));
+					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(1));
 				} else if(rand === 2) {
-					this.battlefield[y][x] = 2;
-					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = 2;
+					this.battlefield[y][x] =  new Tile(new Terrain(2));
+					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(2));
 				} else if(rand === 3) {
-					this.battlefield[y][x] = 3;
-					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = 3;
+					this.battlefield[y][x] =  new Tile(new Terrain(3));
+					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(3));
 				} else {
-					this.battlefield[y][x] = 0;
-					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = 0;
+					this.battlefield[y][x] =  new Tile(new Terrain(0));
+					this.battlefield[y - Math.floor(Math.random() * 10) % 2 ][x - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(0));
 				}
 			} else {
-				this.battlefield[y][x] = 0;
+				this.battlefield[y][x] =  new Tile(new Terrain(0));
 			}
 		}
 	}
 	for(i = 0; i < 2; i++){
 		for(y = 2; y < boardSize - 2; y ++){
 			for(x = 2; x < boardSize - 2; x++){
-				if(this.battlefield[x][y] != 0){
+				if(this.battlefield[x][y].getTerrain().getType() != 0){
 					this.battlefield[x - Math.floor(Math.random() * 10) % 2 ][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
 					this.battlefield[x][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
 					this.battlefield[x + Math.floor(Math.random() * 10) % 2 ][y] = this.battlefield[x][y];

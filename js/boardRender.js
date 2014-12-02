@@ -303,7 +303,7 @@ function render() {
 	
 	for (var y=0; y<bottom-top; y++) {
 		for (var x=0; x<right-left; x++) {		
-			var tile = board[y+top][x+left];		
+			var tile = board[y+top][x+left].getTerrain().getType();		
 		
 			if (useSeparateTiles) {
 				var singleTileImg = separateTileImages[tile.toString()];	
@@ -331,4 +331,3 @@ function render() {
 	mapCtx.fillRect(viewedAreaLeft, viewedAreaTop, viewedAreaW, viewedAreaH);
 }
 
-$(initBoard);

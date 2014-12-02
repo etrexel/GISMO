@@ -3,11 +3,13 @@
 <head>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="js/Tile.js"></script>
+	<script type="text/javascript" src="js/Terrain.js"></script>
 	<script type="text/javascript" src="js/Battlefield.js"></script>
+	<script type="text/javascript" src="js/Game.js"></script>
 	<script type="text/javascript" src="js/boardData.js"></script>
 	<script type="text/javascript" src="js/boardRender.js"></script>
-	<script type="text/javascript" src="js/Game.js"></script>
-	<script type="text/javascript" src="js/Fraction.js"></script>
+	<script type="text/javascript" src="js/Faction.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="style.css" />
 
@@ -28,29 +30,35 @@
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
+		var game = new Game();
+		game.init();
+
+		initBoard();
 
 		var moveCount = 0;
-		var game = new Game();
 		
-		var fraction1 = new Fraction();
-		fraction1.setURl("http://localhost/GISMO/player1.php");
 		
-		var fraction2 = new Fraction();
-		fraction2.setURl("http://localhost/GISMO/player1.php");
+		var Faction1 = new Faction();
+		Faction1.setURl("http://localhost/GISMO/player1.php");
+		
+		var Faction2 = new Faction();
+		Faction2.setURl("http://localhost/GISMO/player1.php");
 
-		console.log(fraction1.getStart());
-		fraction2.getStart();
+		console.log(Faction1.getStart());
+		Faction2.getStart();
 
-		board[0][5] = 4;
+		//board[0][5] = 4;
 
 		var tid = setTimeout(timer, 1000);
 		function timer() {
-			board = b.prototype.battlefield;
-			
-			board[0][moveCount % 250] = 4;
-			startRendering();
-			fraction1.getMove();
-			fraction2.getMove();
+			//var temp = board[0][moveCount % 250];
+			board = b.battlefield;
+			//console.log(b.battlefield[0][(moveCount % 250) - 1].getType());
+			board[0][moveCount % 250];
+			//board[0][(moveCount % 250) - 1] = temp;
+			render();
+			Faction1.getMove();
+			Faction2.getMove();
 			$("#move").html(moveCount++);
 			game.tick();
 			tid = setTimeout(timer, 1000);

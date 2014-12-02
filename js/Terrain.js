@@ -4,19 +4,19 @@ var Terrain = function (terrain_type) {
     this.see_thru = false;
     this.fire_thru = false;
 
-    if (terrain_type === "plain") {
+    if (terrain_type === 0) {
         this.move_into = true;
         this.see_thru = true;
         this.fire_thru = true;
     }
 
-    if (terrain_type === "forest") {
+    if (terrain_type === 1) {
         this.move_into = true;
         this.see_thru = false;
         this.fire_thru = true;
     }
 
-    if (terrain_type === "water") {
+    if (terrain_type === 2) {
         this.move_into = false;
         this.see_thru = true;
         this.fire_thru = true;

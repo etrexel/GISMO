@@ -1,3 +1,3 @@
-var b = Battlefield;
-b.prototype.generateBattlefield();
-var board = b.prototype.battlefield;
+var b = new Battlefield();
+b.generateBattlefield();
+var board = b.battlefield;
