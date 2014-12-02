@@ -1,4 +1,4 @@
-QUnit.test("Location Class Test", function(assert){
+QUnit.test("Location Class Test", function (assert) {
     var testLoc = new Location(5, 2);
     assert.equal(testLoc.getX(), 5, "getX()");
     assert.equal(testLoc.getY(), 2, "getY()");
@@ -13,7 +13,7 @@ QUnit.test("Location Class Test", function(assert){
     assert.equal(testLoc.isEqual(new Location(2, 5)), false, "isEqual() False");
 });
 
-QUnit.test("Terrain Class Test", function(assert){
+QUnit.test("Terrain Class Test", function (assert) {
     var test_type = "plain";
     var terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), true, "Plain Move");
@@ -36,7 +36,7 @@ QUnit.test("Terrain Class Test", function(assert){
     assert.equal(terrain.canFire(), false, "Mountain Fire");
 });
 
-QUnit.test("Unit Class Test", function(assert){
+QUnit.test("Unit Class Test", function (assert) {
     var test_location = new Location(4, 5);
     var test_unit = new Unit("Unit", "red", test_location);
     assert.equal(test_unit.getType(), "Unit", "getType()");
@@ -47,7 +47,7 @@ QUnit.test("Unit Class Test", function(assert){
     assert.equal(test_unit.getLocation().isEqual(test_location), true, "getLocation()");
 });
 
-QUnit.test("Blockhouse Class Test", function(assert){
+QUnit.test("Blockhouse Class Test", function (assert) {
     var test_location = new Location(5, 4);
     var test_blockhouse = new Blockhouse("red", test_location);
     assert.equal(test_blockhouse.getType(), "Blockhouse", "getType()");
@@ -58,7 +58,7 @@ QUnit.test("Blockhouse Class Test", function(assert){
     assert.equal(test_blockhouse.getHealth(), 1, "hit()");
 });
 
-QUnit.test("Tank Class Test", function(assert){
+QUnit.test("Tank Class Test", function (assert) {
     var test_location = new Location(5, 4);
     var new_location = new Location(10, 10);
     var test_tank = new Tank("red", test_location, "S", "S");
@@ -373,7 +373,7 @@ QUnit.test("Tank Class Test", function(assert){
     assert.equal(test_tank.getLocation().isEqual(new Location(8, 9)), true, "Speed 2 W->NW Coordinates");
 });
 
-QUnit.test("Tile Class Test", function(assert){
+QUnit.test("Tile Class Test", function (assert) {
     var test_tile = new Tile(new Terrain("plain"));
     assert.equal(test_tile.getTerrain().getType(), "plain", "getTerrain()");
     assert.equal(test_tile.getUnit(), null, "getUnit() NULL");

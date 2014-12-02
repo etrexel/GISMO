@@ -6,8 +6,8 @@ Game.prototype.tick = function() {
 	console.log("TICK");
 };
 
-Game.prototype.init = function() {
-	
-
-	//return b.prototype.battlefield;
+Game.prototype.init = function(faction1, faction2) {
+	this.battlefield = new Battlefield(faction1, faction2);
+	this.battlefield.generateBattlefield();
+	board = this.battlefield.battlefield;
 };

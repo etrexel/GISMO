@@ -9,23 +9,19 @@ var tilesVertical = 80;
 
 var TILE_SIZE = 8;
 
-var tileInfo = {
-	"src": "img/terrain_small.png",
-	"tiles": {
-		"0": [0,0], // tile identifier and tile row,col position in image file
-		"1": [0,1],
-		"2": [0,2],
-		"3": [0,3],
-		"4": [0,4]
-	}	
-};
-
 var separateTileInfo = {
-	"0": "img/tiles/grass.png",
-	"1": "img/tiles/tree.png",
-	"2": "img/tiles/water.png",
-	"3": "img/tiles/mountain.png",
-	"4": "img/tiles/tank.png"
+	"0": "img/grass.png",
+	"1": "img/tree.png",
+	"2": "img/water.png",
+	"3": "img/mountain.png",
+	"blueBodyNormal": "img/blue_body_normal.png",
+	"blueBodyOrtho": "img/blue_body_ortho.png",
+	"blueTurretNormal": "img/blue_turret_normal.png",
+	"blueTurretOrtho": "img/blue_turret_ortho.png",
+	"redBodyNormal": "img/red_body_normal.png",
+	"redBodyOrtho": "img/red_body_ortho.png",
+	"redTurretNormal": "img/red_turret_normal.png",
+	"redTurretOrtho": "img/red_turret_ortho.png"
 }
 
 var separateTileImages = {}
@@ -49,18 +45,16 @@ for (var id in separateTileInfo) {
 	separateTileImages[id] = img;
 }
 
-var useSeparateTiles = true;
-
 
 /************/
 
 
 // tile dimenstions of entire board
-var boardW = board[0].length;
-var boardH = board.length;
+var boardW;
+var boardH;
 
-var minimapW = 150;
-var minimapH = minimapW / boardW * boardH;
+var minimapW;
+var minimapH;
 
 // pixel dimensions of canvas
 var canvasW = tilesHorizontal * TILE_SIZE;
@@ -92,6 +86,12 @@ var keys = {
 var rerender = false; // the board will be rerendered on the frame after this gets set to true
 
 function initBoard() {	
+	boardW = board[0].length;
+	boardH = board.length;
+
+	minimapW = 150;
+	minimapH = minimapW / boardW * boardH;
+
 	$canvas = $("#boardCanvas");
 	canvas = $canvas[0];
 	ctx = canvas.getContext('2d');	
@@ -134,15 +134,9 @@ function initBoard() {
 		rerender = true;	
 	});	
 	
-	if (!useSeparateTiles) {
-		// load images then start rendering
-		tileImg.src = tileInfo["src"];	
-	} else {
-		for (var id in separateTileImages) {
-			separateTileImages[id].src = separateTileInfo[id];
-		}	
-	}
-	
+	for (var id in separateTileImages)
+		separateTileImages[id].src = separateTileInfo[id];
+		
 	/* Minimap */
 	
 	$mapCanvas = $("#mapCanvas");
@@ -295,25 +289,81 @@ function render() {
 	
 	//console.log(top, bottom, left, right);
 	
-	// numbers are scaled up for this modulus to prevent floating point garbage
-	var offsetX = - ((cameraX*10000) % (ts*10000)) / 10000;
-	var offsetY = -((cameraY*10000) % (ts*10000)) / 10000;
-	
-	//console.log(offsetX, offsetY);
+	// transform ctx
+	ctx.translate(-cameraX, -cameraY);
+	ctx.scale(zoom, zoom);
 	
 	for (var y=0; y<bottom-top; y++) {
 		for (var x=0; x<right-left; x++) {		
-			var tile = board[y+top][x+left].getTerrain().getType();		
-		
-			if (useSeparateTiles) {
-				var singleTileImg = separateTileImages[tile.toString()];	
-				ctx.drawImage(singleTileImg, x*ts+offsetX, y*ts+offsetY, ts, ts);
-			} else {		
-				var tileData = tileInfo["tiles"][tile.toString()];			
-				ctx.drawImage(tileImg, tileData[1]*TILE_SIZE, tileData[0]*TILE_SIZE, TILE_SIZE, TILE_SIZE, x*ts+offsetX, y*ts+offsetY, ts, ts);
+			var tile = board[y+top][x+left];
+			
+			// draw terrain
+			var terrain = tile.terrain.getType(); 
+			var singleTileImg = separateTileImages[terrain.toString()];	
+			ctx.drawImage(singleTileImg, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+			
+			// draw unit
+			var unit = tile.getUnit();
+			if (unit) {
+				if (unit.getType() == "Blockhouse") {
+				
+				} else if (unit.getType() == "Tank") {
+					console.log("Drawing tank at ("+(x+left).toString()+", "+(y+top).toString()+")");
+				
+					var heading = unit.getHeading();
+					var turret = unit.getTurret();
+					
+					var mapping = {
+						"N": ["Normal", 0],
+						"E": ["Normal", 90],
+						"S": ["Normal", 180],
+						"W": ["Normal", 270],
+						"NE": ["Ortho", 0],
+						"SE": ["Ortho", 90],
+						"SW": ["Ortho", 180],
+						"NW": ["Ortho", 270]
+					};
+					
+					/*
+					var color;
+					if (unit.getFaction() == game.battlefield.faction1)
+						color = "red";
+					else
+						color = "blue";
+					*/
+					var color = "red";
+					
+					ctx.save();
+					ctx.translate((x+left+0.5)*TILE_SIZE, (y+top+0.5)*TILE_SIZE);
+					
+					// draw body
+					var bodyMapping = mapping[heading];
+					var bodyImage = separateTileImages[color+"Body"+bodyMapping[0]];
+					var bodyRotation = bodyMapping[1];
+					
+					ctx.rotate(Math.PI/180*bodyRotation);
+					ctx.drawImage(bodyImage, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+					ctx.rotate(-Math.PI/180*bodyRotation);
+						
+					// draw turret
+					var turretMapping = mapping[turret];
+					var turretImage = separateTileImages[color+"Turret"+turretMapping[0]];
+					var turretRotation = turretMapping[1];
+					
+					ctx.rotate(Math.PI/180*turretRotation);
+					ctx.drawImage(bodyImage, (x+left)*TILE_SIZE, (y+top)*TILE_SIZE);
+					ctx.rotate(-Math.PI/180*turretRotation);
+					
+					ctx.restore();
+				}
 			}
 		}
 	}
+	
+	// undo transforms (faster than restoring)
+	ctx.scale(1/zoom, 1/zoom);
+	ctx.translate(cameraX, cameraY);
+	
 	
 	mapCtx.clearRect(0, 0, minimapW, minimapH);
 	mapCtx.fillStyle = "#222222";
