@@ -43,6 +43,7 @@ Battlefield.prototype.generateBattlefield = function () {
 			}
 		}
 	}
+
 	for(i = 0; i < 2; i++){
 		for(y = 2; y < boardSize - 2; y ++){
 			for(x = 2; x < boardSize - 2; x++){
@@ -55,6 +56,22 @@ Battlefield.prototype.generateBattlefield = function () {
 			}
 		}
 	}
+
+
+	for(y = 0; y < 10; y++ ) {
+		for(x = 0; x < 10; x++ ) {
+			this.battlefield[x][y] = new Tile(new Terrain(4));
+		}
+	}
+
+	for(y = 0; y < 10; y++ ) {
+		for(x = 0; x < 10; x++ ) {
+			this.battlefield[boardSize - x][boardSize - y] = new Tile(new Terrain(4));
+		}
+	}
+
+	this.battlefield[5][5] = new Tile(new Terrain(0));
+	this.battlefield[boardSize - 5][boardSize - 5] = new Tile(new Terrain(0));
 };
 
 Battlefield.prototype.setupTeam = function (faction, json) {
