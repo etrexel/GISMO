@@ -53,36 +53,6 @@
 
 		initBoard(game);
 
-		var moveCount = 1;
-
-		
-
-		var tempTank = new Tank(Faction1, new Location(10, 10), "E", "SE");
-		
-
-		
-		tempTank.setSpeed(1);
-		var tid = setTimeout(timer, 1000);
-		function timer() {
-			if (moveCount > 20) {
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].clearUnit();
-				tempTank.move("S");
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].setUnit(tempTank);
-			} else if (moveCount > 10) {
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].clearUnit();
-				tempTank.move("SE");
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].setUnit(tempTank);
-			} else if (moveCount > 0) {
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].clearUnit();
-				tempTank.move("E");
-				board[tempTank.getLocation().getY()][tempTank.getLocation().getX()].setUnit(tempTank);
-			}
-			rerender = true;
-
-			$("#move").html(moveCount++);
-			game.tick();
-			tid = setTimeout(timer, 1000);
-		}
 	});
 </script>
 </html>
