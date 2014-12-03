@@ -5,13 +5,13 @@ if(isset($_POST['type'])) {
 		case 'start':
 		$setup = array(
 			"Tanks" => array( 
-				array("x" => 5, "y" => 25),
-				array("x" => 5, "y" => 26),
-				array("x" => 5, "y" => 27),
-				array("x" => 5, "y" => 29),
-				array("x" => 5, "y" => 30),
-				array("x" => 5, "y" => 31),
-				array("x" => 5, "y" => 32),
+				array("x" => 8, "y" => 10),
+				array("x" => 8, "y" => 11),
+				array("x" => 8, "y" => 12),
+				array("x" => 8, "y" => 13),
+				array("x" => 8, "y" => 14),
+				array("x" => 8, "y" => 15),
+				array("x" => 8, "y" => 16),
 				),
 			"Blockhouse" => array("x" => 20,"y" => 12 )
 			);

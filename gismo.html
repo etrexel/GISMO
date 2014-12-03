@@ -22,27 +22,32 @@
 </head>
 <body>
 
-<nav>
-	<div class="faction">Team 1:</div>
-	<div id="gen">
-		<span id="move">0</span>
-	</div>
-	<div class="faction">Team 2:</div>
-</nav>
+	<nav>
+		<div class="faction">Team 1:</div>
+		<div id="gen">
+			<span id="move">0</span>
+		</div>
+		<div class="faction">Team 2:</div>
+	</nav>
 
-<div class="canvasContainer">
-	<canvas id="mapCanvas"></canvas>
-	<canvas id="boardCanvas"></canvas>
-</div>
+	<div class="canvasContainer">
+		<canvas id="mapCanvas"></canvas>
+		<canvas id="boardCanvas"></canvas>
+	</div>
 
 </body>
 <script type="text/javascript">
 	$(document).ready(function() {
 		var game = new Game();
 
-		var faction1Name = "Confederate";
-		var faction2Name = "Union";
-		game.init(faction1Name, faction2Name);
+		var Faction1 = new Faction("Confederate");
+		Faction1.setURl("http://localhost/GISMO/player1.php");
+
+		var Faction2 = new Faction("Union");
+		Faction2.setURl("http://localhost/GISMO/player2.php");
+
+
+		game.init(Faction1, Faction2);
 
 		var board = game.battlefield.battlefield;
 
@@ -50,13 +55,12 @@
 
 		var moveCount = 1;
 
-		var Faction1 = new Faction();
-		Faction1.setURl("http://localhost/GISMO/player1.php");
+		
 
-		var Faction2 = new Faction();
-		Faction2.setURl("http://localhost/GISMO/player1.php");
+		var tempTank = new Tank(Faction1, new Location(10, 10), "E", "SE");
+		
 
-		var tempTank = new Tank(faction1Name, new Location(10, 10), "E", "SE");
+		
 		tempTank.setSpeed(1);
 		var tid = setTimeout(timer, 1000);
 		function timer() {

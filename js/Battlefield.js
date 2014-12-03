@@ -8,18 +8,19 @@ var Battlefield = function (first_faction, second_faction) {
 	this.faction2Tanks = [];
 	this.faction1Blockhouse;
 	this.faction2Blockhouse;
-    this.changedSpeed = [];
-    this.changedDirection = [];
+	this.changedSpeed = [];
+	this.changedDirection = [];
 	this.faction1Orders = "";
 	this.faction2Orders = "";
 	this.faction1Reports = "";
 	this.faction2Reports = "";
+	this.boardSize = 250;
 	
 	this.status = "playing";
 };
 
 Battlefield.prototype.generateBattlefield = function () {
-	var boardSize = 250;
+	var boardSize = this.boardSize;
 
 	this.battlefield = Array(boardSize);
 	for(y = 0 ; y < boardSize ; y++ ) {
@@ -94,14 +95,58 @@ Battlefield.prototype.generateBattlefield = function () {
 	
 	// smoke test
 	this.battlefield[0][7].setSmoke(true);
+
+	//populate tanks
+	for(var i = 0; i < this.faction1Tanks.length; i++) {
+		this.battlefield[this.faction1Tanks[i].location.x][this.faction1Tanks[i].location.y].setUnit(this.faction1Tanks[i]);
+	}
+
+	for(var i = 0; i < this.faction2Tanks.length; i++) {
+		var x = this.faction2Tanks[i].location.x;
+		var y = this.faction2Tanks[i].location.y;
+		this.battlefield[x][y].setUnit(this.faction2Tanks[i]);
+	}
 };
 
-Battlefield.prototype.setupTeam = function (faction, json) {
-	var tankNumber = 7;
+Battlefield.prototype.setupTeam = function () {
+	var obj = JSON.parse(this.faction1.getStart());
+	var newx = 0;
+	var newy = 0;
 
-	this.battlefield = Array(tankNumber);
+	for(var i = 0; i < obj.Tanks.length; i++) {
+		var y = obj.Tanks[i].y;
+		var x = obj.Tanks[i].x
+		
+		if(x > 30) {
+			x = newx++;
+		}
+		if(y > 30) {
+			y = newy++;
+		}
+		var tankLoc = new Location(y,x);
+		var tank = new Tank(this.faction1,tankLoc , "N", "N");
+		this.faction1Tanks.push(tank);
+	}
 
+	var obj = JSON.parse(this.faction2.getStart());
 
+	var newx = this.boardSize - 2;
+	var newy = this.boardSize - 1;
+
+	for(var i = 0; i < obj.Tanks.length; i++) {
+		var y = obj.Tanks[i].y;
+		var x = obj.Tanks[i].x
+		
+		if(x < this.boardSize - 30) {
+			x = newx--;
+		}
+		if(y < this.boardSize - 30) {
+			y = newy--;
+		}
+		var tankLoc = new Location(y,x);
+		var tank = new Tank(this.faction2, tankLoc, "N", "N");
+		this.faction2Tanks.push(tank);
+	}
 };
 
 Battlefield.prototype.tankReport = function (faction) {
@@ -111,39 +156,39 @@ Battlefield.prototype.tankReport = function (faction) {
 Battlefield.prototype.inScope = function(x1, y1, x2, y2, scope) {
 	var dx = x2 - x1;
 	var dy = y2 - y1;
-	
+
 	var inView = false;
 	for (var wedge in scope) {
 		if (inView)
 			break;
 		switch (wedge) {
 			case "N":
-				if (dy >= -2*dx && dy >= 2*dx) inView = true;
-				break;
+			if (dy >= -2*dx && dy >= 2*dx) inView = true;
+			break;
 			case "NE":
-				if (dy <= 2*dx && 2*dy >= dx) inView = true;
-				break;
+			if (dy <= 2*dx && 2*dy >= dx) inView = true;
+			break;
 			case "E":
-				if (2*dy <= dx && 2*dy >= -dx) inView = true;
-				break;
+			if (2*dy <= dx && 2*dy >= -dx) inView = true;
+			break;
 			case "SE":
-				if (2*dy <= -dx && dy >= -2*dx) inView = true;
-				break;
+			if (2*dy <= -dx && dy >= -2*dx) inView = true;
+			break;
 			case "S":
-				if (dy <= -2*dx && dy <= 2*dx) inView = true;
-				break;
+			if (dy <= -2*dx && dy <= 2*dx) inView = true;
+			break;
 			case "SW":
-				if (2*dy <= dx && dy >= 2*dx) inView = true;
-				break;
+			if (2*dy <= dx && dy >= 2*dx) inView = true;
+			break;
 			case "W":
-				if (2*dy >= dx && 2*dy <= -dx) inView = true;
-				break;
+			if (2*dy >= dx && 2*dy <= -dx) inView = true;
+			break;
 			case "NW":
-				if (2*dy >= -dx && dy <= -2*dx) inView = true;
-				break;
+			if (2*dy >= -dx && dy <= -2*dx) inView = true;
+			break;
 		}
 	}
-	
+
 	return inView;
 }
 
@@ -175,7 +220,7 @@ Battlefield.prototype.inLineOfSight = function(x1, y1, x2, y2, scope) {
 					blocked = true;
 				x++;
 			}					
-		
+
 		} else {
 			// y dist magnitude greater than x dist magnitude				
 			var y = 1;
@@ -248,11 +293,11 @@ Battlefield.prototype.objectReport = function (faction) {
 		scope.push(dirs[(dirs.indexOf(turret)+1)%8]); // the wedge one clockwise of the turret
 		if (scope.indexOf(facing) == -1)
 			turret.push(facing); // the wedge the tank is facing
-				
+
 		for (var obj in objects) {
 			// each obj represents a tile which can have both smoke and a unit
 			// determine if location itself is visible
-		
+
 			var objX = obj["x"];
 			var objY = obj["y"];
 			var tile = obj["tile"];
@@ -363,13 +408,13 @@ Battlefield.prototype.executeOrders = function () {
 	
 	// fire
 	for (var i=0; i<tanksAndOrders.length; i++) {
-	
+
 		var orders = tanksAndOrders[i]["orders"];
 		if (!orders)
 			continue; // no orders given for this tank
 		
 		var tank = tanksAndOrders[i]["tank"];
-			
+
 		var x = orders["X"];
 		var y = orders["Y"];
 		if (x && y) {
@@ -381,30 +426,30 @@ Battlefield.prototype.executeOrders = function () {
 				&& this.inScope(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()])) {
 				
 				tank.fire();
-				tank.reload();
-				
-				var tankTile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
-				tankTile.setSmoke(true);
-				
-				var damage;
-				if (!this.inLineOfSight(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()]))
-					damage = 0;
-				else
-					damage = this.toHit(tank, target);
-				
-				if (damage > 0) {
-					if (target.getType() == "Blockhouse") 
-						target.hit(1);
-					else if (target.getType() == "Tank") 
-						target.hit(damage);		
-					
-					targetTile.setSmoke(true);
-				}				
-			}
+			tank.reload();
+
+			var tankTile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+			tankTile.setSmoke(true);
+
+			var damage;
+			if (!this.inLineOfSight(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()]))
+				damage = 0;
+			else
+				damage = this.toHit(tank, target);
+
+			if (damage > 0) {
+				if (target.getType() == "Blockhouse") 
+					target.hit(1);
+				else if (target.getType() == "Tank") 
+					target.hit(damage);		
+
+				targetTile.setSmoke(true);
+			}				
 		}
-	
 	}
 	
+}
+
 	// all tanks have fired, check blockhouse status
 	var blockhouse1Health = this.faction1Blockhouse.getHealth();
 	var blockhouse2Health = this.faction2Blockhouse.getHealth();
@@ -446,10 +491,10 @@ Battlefield.prototype.executeOrders = function () {
 		this.status = this.faction1 + " wins (opponent tanks destroyed)";
 		return;
 	}
-		
+
 	// change speed
 	for (var i=0; i<tanksAndOrders.length; i++) {
-	
+
 		var orders = tanksAndOrders[i]["orders"];
 		if (!orders)
 			continue; // no orders given for this tank
@@ -473,7 +518,7 @@ Battlefield.prototype.executeOrders = function () {
 	
 	// move all tanks without checking for collisions
 	for (var i=0; i<tanksAndOrders.length; i++) {
-	
+
 		var orders = tanksAndOrders[i]["orders"];
 		if (!orders)
 			continue; // no orders given for this tank
@@ -500,7 +545,7 @@ Battlefield.prototype.executeOrders = function () {
 	var collisionsResolved = false;
 	while (!collisionsResolved) {
 		collisionsResolved = true;
-	
+
 		for (var i=0; i<tanksAndOrders.length; i++) {
 			var tank = tanksAndOrders[i]["tank"];
 			
@@ -548,7 +593,7 @@ Battlefield.prototype.executeOrders = function () {
 	
 	// turn turret
 	for (var i=0; i<tanksAndOrders.length; i++) {
-	
+
 		var orders = tanksAndOrders[i]["orders"];
 		if (!orders)
 			continue; // no orders given for this tank
@@ -598,75 +643,75 @@ Battlefield.prototype.tick = function () {
 };
 
 Battlefield.prototype.toHit = function (attacker, defender) {
-    var Dx = defender.getLocation().getX() - attacker.getLocation.getX();
-    var Dy = defender.getLocation().getY() - attacker.getLocation.getY();
-    var D = Dx*Dx + Dy*Dy;
-    var probability;
-    if (D > 100) {
-        return 0;
-    } else {
-        probability = Math.round(100 * Math.exp(-0.0003 * D) - 5);
+	var Dx = defender.getLocation().getX() - attacker.getLocation.getX();
+	var Dy = defender.getLocation().getY() - attacker.getLocation.getY();
+	var D = Dx*Dx + Dy*Dy;
+	var probability;
+	if (D > 100) {
+		return 0;
+	} else {
+		probability = Math.round(100 * Math.exp(-0.0003 * D) - 5);
 
-        switch (attacker.getSpeed()) {
-            case -1:
-            case 1:
-                probability = probability - 3;
-                break;
-            case 2:
-                probability = probability - 5;
-                break;
-            case 0:
-                break;
-            default:
-                break;
-        }
+		switch (attacker.getSpeed()) {
+			case -1:
+			case 1:
+			probability = probability - 3;
+			break;
+			case 2:
+			probability = probability - 5;
+			break;
+			case 0:
+			break;
+			default:
+			break;
+		}
 
-        switch (defender.getSpeed()) {
-            case -1:
-            case 1:
-                probability = probability - 5;
-                break;
-            case 2:
-                probability = probability - 10;
-                break;
-            case 0:
-                break;
-            default:
-                break;
-        }
+		switch (defender.getSpeed()) {
+			case -1:
+			case 1:
+			probability = probability - 5;
+			break;
+			case 2:
+			probability = probability - 10;
+			break;
+			case 0:
+			break;
+			default:
+			break;
+		}
 
-        if (this.changedSpeed.contains(attacker)) {
-            probability = probability - 5;
-        }
-        if (this.changedDirection.contains(attacker)) {
-            probability = probability - 5;
-        }
-        if (this.changedSpeed.contains(defender)) {
-            probability = probability - 5;
-        }
-        if (this.changedDirection.contains(defender)) {
-            probability = probability - 5;
-        }
+		if (this.changedSpeed.contains(attacker)) {
+			probability = probability - 5;
+		}
+		if (this.changedDirection.contains(attacker)) {
+			probability = probability - 5;
+		}
+		if (this.changedSpeed.contains(defender)) {
+			probability = probability - 5;
+		}
+		if (this.changedDirection.contains(defender)) {
+			probability = probability - 5;
+		}
 
         //TODO Add Direction of Impact
         if (defender.getType() === "Tank") {
-            console.log("Add Direction of Impact");
+        	console.log("Add Direction of Impact");
         }
 
         if (probability < 0) {
-            probability = 0;
+        	probability = 0;
         }
         if (probability > 95) {
-            probability = 95;
+        	probability = 95;
         }
 
         var rand = Math.random() % 101;
         if (rand <= probability) {
-            if (D >= 50) {
-                return 1;
-            } else {
-                return 2;
-            }
+        	if (D >= 50) {
+        		return 1;
+        	} else {
+        		return 2;
+        	}
         }
     }
 };

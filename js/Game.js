@@ -8,5 +8,6 @@ Game.prototype.tick = function() {
 
 Game.prototype.init = function(faction1, faction2) {
 	this.battlefield = new Battlefield(faction1, faction2);
+	this.battlefield.setupTeam();
 	this.battlefield.generateBattlefield();
 };
