@@ -5,14 +5,12 @@ var Game = function () {
 Game.prototype.tick = function() {
 	console.log("TICK");
 
-	console.log(this.battlefield.faction1.getMove());
+	this.battlefield.faction1Orders = this.battlefield.faction1.getMove();
+	this.battlefield.faction2Orders = this.battlefield.faction2.getMove();
 
-	var tempTank = this.battlefield.faction1Tanks[0];
+	this.battlefield.executeOrders();
+	this.battlefield.clearOrders();
 	
-	board[tempTank.getLocation().getX()][tempTank.getLocation().getY()].clearUnit();
-	tempTank.setSpeed(1);
-	tempTank.move("S");
-	board[tempTank.getLocation().getX()][tempTank.getLocation().getY()].setUnit(tempTank);
 };
 
 Game.prototype.init = function(faction1, faction2) {

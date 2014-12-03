@@ -374,8 +374,8 @@ Battlefield.prototype.generateReports = function () {
 };
 
 Battlefield.prototype.executeOrders = function () {
-	var orders1 = JSON.parse(faction1Orders);
-	var orders2 = JSON.parse(faction2Orders);
+	var orders1 = JSON.parse(this.faction1Orders);
+	var orders2 = JSON.parse(this.faction2Orders);
 	
 	// check for surrender
 	if (orders1["surrender"] && orders1["surrender"]) {

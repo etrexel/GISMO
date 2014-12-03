@@ -22,9 +22,9 @@ if(isset($_POST['type'])) {
 		case 'move':
 		$orders = array(
 			"surrender" => false,
-			"tanks" => array(
+			"Tanks" => array(
 				array("heading" => "S",
-					"speed" => 1,
+					"speed" => 0,
 					"TurretFacing" => "nw"
 					),
 				array("heading" => "n",
