@@ -15,14 +15,61 @@ if(isset($_POST['type'])) {
 				),
 			"Blockhouse" => array("x" => 20,"y" => 12 )
 			);
-		
+
 		echo json_encode($setup);
 		break;
 
 		case 'move':
-		echo "Moving...";
+		$orders = array(
+			"surrender" => false,
+			"tanks" => array(
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					),
+				array("heading" => "n",
+					"speed" => 2,
+					"TurretFacing" => "nw",
+					"X" => 2,
+					"Y" => 5
+					)
+				)
+			);
+		echo json_encode($orders);
 		break;
-		
+
 		default:
 		echo "Error: Unrecognized type";
 		break;
