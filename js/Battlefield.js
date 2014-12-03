@@ -12,7 +12,6 @@ var Battlefield = function (first_faction, second_faction) {
 	this.faction2Orders = "";
 	this.faction1Reports = "";
 	this.faction2Reports = "";
-
 };
 
 Battlefield.prototype.generateBattlefield = function () {
@@ -101,7 +100,7 @@ Battlefield.prototype.tankReport = function (faction) {
 
 };
 
-Battlefield.prototype.objectReport = function (faction) { /*
+Battlefield.prototype.objectReport = function (faction) { 
 	var tanks;
 	var enemyTanks;
 	if (faction == this.faction1) {
@@ -147,7 +146,7 @@ Battlefield.prototype.objectReport = function (faction) { /*
 				
 		for (var obj in objects) {
 			// each obj represents a tile which can have both smoke and a unit
-			// determine if location itself is visible,
+			// determine if location itself is visible
 		
 			var objX = obj["x"];
 			var objY = obj["y"];
@@ -156,8 +155,6 @@ Battlefield.prototype.objectReport = function (faction) { /*
 			// can a tank see smoke on itself? does it need to?
 			if (tile.getUnit() === tank)
 				continue; // the object is itself, skip
-			if (!tile.hasSmoke && tanks.indexOf(tile.getUnit) != -1)
-				continue; // the object is a friendly tank, skip 
 			
 			// check if the object is in one of the wedges of visibility
 			// algorithm from GISMO document
@@ -243,18 +240,53 @@ Battlefield.prototype.objectReport = function (faction) { /*
 			}
 		}
 	}
+	
+	var objectReportObjects = [];
 	for (var obj in visibleObjects) {
 		var x = obj["x"];
 		var y = obj["y"];
 		var seenBy = visibleObjects[obj];
+		var seenByIndeces = [];
+		for (var tank in seenBy) {
+			seenByIndeces.push[tanks.indexOf(tank)];
+		}
 		if (obj["tile"].hasSmoke()) {
-			// add to report => smoke at (x,y) seen by seenBy			
+			// add to report => smoke at (x,y) seen by seenBy
+			var newObject = {
+				"type": "Smoke",
+				"x": x,
+				"y": y,
+				"seenBy": seenByIndeces
+			};			
+			objectReportObjects.push(newObject);
 		}
 		var unit = obj["tile"].getUnit();
 		if (unit) {
-			// add to report => unit at (x,y) seen by seenBy			
+			var newObject = {
+				"type": unit.getType(),
+				"x": x,
+				"y": y,
+				"seenBy": seenByIndeces,
+			};
+			
+			if (unit.getType() == "Tank") {
+				newObject["flags"] = {
+					"Mobile": unit.canMove(),
+					"Weapon": unit.canFire()
+				};
+				newObject["hits"] = 2-unit.health;
+				newObject["heading"] = unit.getHeading();
+				newObject["turretFacing"] = unit.getTurret();
+				newObject["speed"] = unit.getSpeed();
+			} else if (unit.getType() == "Blockhouse") [
+				newObject["hits"] = 3-unit.health;
+			}
+			
+			objectReportObjects.push(newObject);
 		}			
-	} */
+	} 
+	
+	return objectReportObjects;
 };
 
 Battlefield.prototype.generateReports = function () {
