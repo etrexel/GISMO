@@ -23,14 +23,16 @@ QUnit.test("Terrain Class Test", function (assert) {
     terrain = new Terrain(test_type);
     assert.equal(terrain.canMove(), true, "Forest Move");
     assert.equal(terrain.canSee(), false, "Forest See");
-    assert.equal(terrain.canFire(), true, "Forest Fire");
+    assert.equal(terrain.canFire(), false, "Forest Fire");
     test_type = 2;
     terrain = new Terrain(test_type);
-    assert.equal(terrain.canMove(), false, "Water Move");
+    assert.equal(terrain.canMove(), true, "Water Move");
     assert.equal(terrain.canSee(), true,"Water See");
     assert.equal(terrain.canFire(), true, "Water Fire");
+    assert.equal(terrain.immobilizes(), true, "Immobilizes True");
     test_type = 3;
     terrain = new Terrain(test_type);
+    assert.equal(terrain.immobilizes(), false, "Immobilizes False");
     assert.equal(terrain.canMove(), false, "Mountain Move");
     assert.equal(terrain.canSee(), false,"Mountain See");
     assert.equal(terrain.canFire(), false, "Mountain Fire");

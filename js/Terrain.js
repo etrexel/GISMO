@@ -39,7 +39,7 @@ Terrain.prototype.canMove = function () {
 
 Terrain.prototype.immobilizes = function() {
 	return this.type === 2; // water immobilizes tanks
-}
+};
 
 Terrain.prototype.canFire = function () {
     return this.fire_thru;
