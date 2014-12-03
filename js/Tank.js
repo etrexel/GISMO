@@ -523,3 +523,8 @@ Tank.prototype.move = function (new_heading) {
 Tank.prototype.isDestroyed = function () {
     return this.health <= 0;
 };
+
+Tank.prototype.immobilize = function() {
+	if (this.health > 1)
+		this.health = 1;
+}

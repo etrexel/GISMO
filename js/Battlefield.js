@@ -6,12 +6,16 @@ var Battlefield = function (first_faction, second_faction) {
 	this.faction2Base = "";
 	this.faction1Tanks = [];
 	this.faction2Tanks = [];
+	this.faction1Blockhouse;
+	this.faction2Blockhouse;
     this.changedSpeed = [];
     this.changedDirection = [];
 	this.faction1Orders = "";
 	this.faction2Orders = "";
 	this.faction1Reports = "";
 	this.faction2Reports = "";
+	
+	this.status = "playing";
 };
 
 Battlefield.prototype.generateBattlefield = function () {
@@ -75,14 +79,18 @@ Battlefield.prototype.generateBattlefield = function () {
 	var blockhouse1Location = new Location(5, 5);
 	var blockhouse1 = new Blockhouse(this.faction1, blockhouse1Location);
 	blockhouse1Tile.setUnit(blockhouse1);
+	
+	this.faction1Blockhouse = blockhouse1;
 
 	var blockhouse2Tile = new Tile(new Terrain(0))
 	var blockhouse2Location = new Location(boardSize - 5 - 1, boardSize - 5 - 1);
 	var blockhouse2 = new Blockhouse(this.faction2, blockhouse2Location);
 	blockhouse2Tile.setUnit(blockhouse2);
 	
+	this.faction2Blockhouse = blockhouse2;
+	
 	this.battlefield[5][5] = blockhouse1Tile;
-	this.battlefield[boardSize - 5][boardSize - 5] = blockhouse2Tile;
+	this.battlefield[boardSize - 5 - 1][boardSize - 5 - 1] = blockhouse2Tile;
 	
 	// smoke test
 	this.battlefield[0][7].setSmoke(true);
@@ -100,7 +108,104 @@ Battlefield.prototype.tankReport = function (faction) {
 
 };
 
+Battlefield.prototype.inScope = function(x1, y1, x2, y2, scope) {
+	var dx = x2 - x1;
+	var dy = y2 - y1;
+	
+	var inView = false;
+	for (var wedge in scope) {
+		if (inView)
+			break;
+		switch (wedge) {
+			case "N":
+				if (dy >= -2*dx && dy >= 2*dx) inView = true;
+				break;
+			case "NE":
+				if (dy <= 2*dx && 2*dy >= dx) inView = true;
+				break;
+			case "E":
+				if (2*dy <= dx && 2*dy >= -dx) inView = true;
+				break;
+			case "SE":
+				if (2*dy <= -dx && dy >= -2*dx) inView = true;
+				break;
+			case "S":
+				if (dy <= -2*dx && dy <= 2*dx) inView = true;
+				break;
+			case "SW":
+				if (2*dy <= dx && dy >= 2*dx) inView = true;
+				break;
+			case "W":
+				if (2*dy >= dx && 2*dy <= -dx) inView = true;
+				break;
+			case "NW":
+				if (2*dy >= -dx && dy <= -2*dx) inView = true;
+				break;
+		}
+	}
+	
+	return inView;
+}
+
+Battlefield.prototype.inLineOfSight = function(x1, y1, x2, y2, scope) {
+	// check if the object is in one of the wedges of visibility
+	// algorithm from GISMO document
+	var dx = x2 - x1;
+	var dy = y2 - y1;
+
+	var inView = this.inScope(x1, y1, x2, y2, scope);
+
+	if (inView) {
+		// check if the object is actualy visible (not blocked)
+		// algorithm from GISMO document
+		var absDx = Math.abs(dx);
+		var absDy = Math.abs(dy);
+		var blocked = false;
+		if (absDx >= absDy) {
+			// x dist magnitude greater than y dist magnitude
+			var x = 1;
+			var y = 0;
+			while (x < absDx && !blocked) {
+				if ((y+1)*absDx <= x*absDy + Math.floor(dx / 2))
+					y++;
+				var xOffset = dx >= 0 ? x : -x;
+				var yOffset = dy >= 0 ? y : -y;
+				var tile = this.battlefield[y1+yOffset][x1+xOffset];
+				if (!tile.getTerrain().canSee())
+					blocked = true;
+				x++;
+			}					
+		
+		} else {
+			// y dist magnitude greater than x dist magnitude				
+			var y = 1;
+			var x = 0;
+			var blocked = false;
+			while (y < absDy && !blocked) {
+				if ((x+1)*absDy <= y*absDx + Math.floor(dy / 2))
+					x++;
+				var xOffset = dx >= 0 ? x : -x;
+				var yOffset = dy >= 0 ? y : -y;
+				var tile = this.battlefield[y1+yOffset][x1+xOffset];
+				if (!tile.getTerrain().canSee())
+					blocked = true;
+				y++;
+			}
+			
+		}
+		
+		return !blocked;
+	}
+	
+	return false;
+}
+
 Battlefield.prototype.objectReport = function (faction) { 
+	// currently using simplified visibility rules:
+	// 1. tanks do not block line of sight
+	// 2. smoke cannot be seen through forest
+	// 3. tanks on the edge of a forest are never seen even if moving
+
 	var tanks;
 	var enemyTanks;
 	if (faction == this.faction1) {
@@ -156,87 +261,12 @@ Battlefield.prototype.objectReport = function (faction) {
 			if (tile.getUnit() === tank)
 				continue; // the object is itself, skip
 			
-			// check if the object is in one of the wedges of visibility
-			// algorithm from GISMO document
-			var dx = objX - tankX;
-			var dy = objY - tankY;
+			var blocked = this.inLineOfSight(tankX, tankY, objX, objY, scope);
 			
-			var inView = false;
-			for (var wedge in scope) {
-				if (inView)
-					break;
-				switch (wedge) {
-					case "N":
-						if (dy >= -2*dx && dy >= 2*dx) inView = true;
-						break;
-					case "NE":
-						if (dy <= 2*dx && 2*dy >= dx) inView = true;
-						break;
-					case "E":
-						if (2*dy <= dx && 2*dy >= -dx) inView = true;
-						break;
-					case "SE":
-						if (2*dy <= -dx && dy >= -2*dx) inView = true;
-						break;
-					case "S":
-						if (dy <= -2*dx && dy <= 2*dx) inView = true;
-						break;
-					case "SW":
-						if (2*dy <= dx && dy >= 2*dx) inView = true;
-						break;
-					case "W":
-						if (2*dy >= dx && 2*dy <= -dx) inView = true;
-						break;
-					case "NW":
-						if (2*dy >= -dx && dy <= -2*dx) inView = true;
-						break;
-				}
-			}
-			
-			if (inView) {
-				// check if the object is actualy visible (not blocked)
-				// algorithm from GISMO document
-				var absDx = Math.abs(dx);
-				var absDy = Math.abs(dy);
-				var blocked = false;
-				if (absDx >= absDy) {
-					// x dist magnitude greater than y dist magnitude
-					var x = 1;
-					var y = 0;
-					while (x < absDx && !blocked) {
-						if ((y+1)*absDx <= x*absDy + Math.floor(dx / 2))
-							y++;
-						var xOffset = dx >= 0 ? x : -x;
-						var yOffset = dy >= 0 ? y : -y;
-						var tile = this.battlefield[tankY+yOffset][tankX+xOffset];
-						if (!tile.getTerrain().canSee())
-							blocked = true;
-						x++;
-					}					
-				
-				} else {
-					// y dist magnitude greater than x dist magnitude				
-					var y = 1;
-					var x = 0;
-					var blocked = false;
-					while (y < absDy && !blocked) {
-						if ((x+1)*absDy <= y*absDx + Math.floor(dy / 2))
-							x++;
-						var xOffset = dx >= 0 ? x : -x;
-						var yOffset = dy >= 0 ? y : -y;
-						var tile = this.battlefield[tankY+yOffset][tankX+xOffset];
-						if (!tile.getTerrain().canSee())
-							blocked = true;
-						y++;
-					}
-					
-				}
-				
-				if (!blocked) {
-					if (!visibleObjects[obj])
-						visibleObjects[obj] = [];
-					visibleObjects[obj].push(tank);
-				}
+			if (!blocked) {
+				if (!visibleObjects[obj])
+					visibleObjects[obj] = [];
+				visibleObjects[obj].push(tank);
 			}
 		}
 	}
@@ -299,7 +329,235 @@ Battlefield.prototype.generateReports = function () {
 };
 
 Battlefield.prototype.executeOrders = function () {
-
+	var orders1 = JSON.parse(faction1Orders);
+	var orders2 = JSON.parse(faction2Orders);
+	
+	// check for surrender
+	if (orders1["surrender"] && orders1["surrender"]) {
+		this.status = "Draw (both surrendered)";
+		return;
+	} else if (orders1["surrender"]) {
+		this.status = this.faction2 + " wins (opponent surrendered)";
+		return;
+	} else if (orders2["surrender"]) {
+		this.status = this.faction1 + " wins (opponent surrendered)";
+		return;
+	}	
+	
+	// put all orders into one array for easy traversal
+	var tanksAndOrders = [];
+	for (var i=0; i<this.faction1Tanks.length; i++) {
+		tanksAndOrders.push({
+			"faction": 1,
+			"tank": this.faction1Tanks[i],
+			"orders": orders1["tanks"][i]
+		});
+	}
+	for (var i=0; i<this.faction2Tanks.length; i++) {
+		tanksAndOrders.push({
+			"faction": 2,
+			"tank": this.faction2Tanks[i],
+			"orders": orders2["tanks"][i]
+		});
+	}
+	
+	// fire
+	for (var i=0; i<tanksAndOrders.length; i++) {
+	
+		var orders = tanksAndOrders[i]["orders"];
+		if (!orders)
+			continue; // no orders given for this tank
+		
+		var tank = tanksAndOrders[i]["tank"];
+			
+		var x = orders["X"];
+		var y = orders["Y"];
+		if (x && y) {
+			var targetTile = this.battlefield[y][x];
+			var target = targetTile.getUnit();
+			if (target
+				&& tank.gunReady()
+				&& tank.canFire() 
+				&& this.inScope(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()])) {
+				
+				tank.fire();
+				tank.reload();
+				
+				var tankTile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+				tankTile.setSmoke(true);
+				
+				var damage;
+				if (!this.inLineOfSight(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()]))
+					damage = 0;
+				else
+					damage = this.toHit(tank, target);
+				
+				if (damage > 0) {
+					if (target.getType() == "Blockhouse") 
+						target.hit(1);
+					else if (target.getType() == "Tank") 
+						target.hit(damage);		
+					
+					targetTile.setSmoke(true);
+				}				
+			}
+		}
+	
+	}
+	
+	// all tanks have fired, check blockhouse status
+	var blockhouse1Health = this.faction1Blockhouse.getHealth();
+	var blockhouse2Health = this.faction2Blockhouse.getHealth();
+	
+	if (blockhouse1Health == 0 && blockhouse2Health == 0) {
+		this.status = "Draw (both blockhouses destroyed)";
+		return;
+	} else if (blockhouse1Health == 0) {
+		this.status = this.faction2 + " wins (opponent blockhouse destroyed)";
+		return;
+	} else if (blockhouse2Health == 0) {
+		this.status = this.faction1 + " wins (opponent blockhouse destroyed)";
+		return;
+	}
+	
+	// check tank status
+	var faction1Alive = false;
+	var faction2Alive = false;
+	for (var tank in this.faction1Tanks) {
+		if (!tank.isDestroyed()) {
+			faction1Alive = true
+			break;
+		}
+	}
+	for (var tank in this.faction2Tanks) {
+		if (!tank.isDestroyed()) {
+			faction2Alive = true
+			break;
+		}
+	}
+	
+	if (!faction1Alive && !faction2Alive) {
+		this.status = "Draw (all tanks destroyed)";
+		return;
+	} else if (!faction1Alive) {
+		this.status = this.faction2 + " wins (opponent tanks destroyed)";
+		return;
+	} else if (!faction2Alive) {
+		this.status = this.faction1 + " wins (opponent tanks destroyed)";
+		return;
+	}
+		
+	// change speed
+	for (var i=0; i<tanksAndOrders.length; i++) {
+	
+		var orders = tanksAndOrders[i]["orders"];
+		if (!orders)
+			continue; // no orders given for this tank
+		
+		var tank = tanksAndOrders[i]["tank"];
+		
+		tank.setSpeed(orders["speed"]);
+	}
+	
+	// move (start)
+	// currently using simplified logic: tanks moving at speed 2 essentially skip 1 space without actually traveling through it
+	// this means tanks can sometimes move through other tanks or through single mountain and water tiles
+	// tanks can also move through each other as long as they dont ever stop on the same tile
+	
+	var oldLocations = {};
+	for (var i=0; i<tanksAndOrders.length; i++) {
+		var tank = tanksAndOrders[i]["tank"];
+		var loc = tank.getLocation();
+		oldLocations[tank] = new Location(loc.getX(), loc.getY()); // using tank objects as dictionary keys, sneaky
+	}	
+	
+	// move all tanks without checking for collisions
+	for (var i=0; i<tanksAndOrders.length; i++) {
+	
+		var orders = tanksAndOrders[i]["orders"];
+		if (!orders)
+			continue; // no orders given for this tank
+		
+		var tank = tanksAndOrders[i]["tank"];
+		
+		tank.move(orders["heading"]);
+	}
+	
+	// check for collisions with terrain/blockhouses, undo move if necessary (retaining new heading)
+	for (var i=0; i<tanksAndOrders.length; i++) {
+		var tank = tanksAndOrders[i]["tank"];
+		
+		var tile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+		if (!tile.canMove() || (tile.getUnit() && tile.getUnit().getType() == "Blockhouse")) {
+			tank.location = oldLocations[tank];
+			tank.immobilize();
+		}
+	}	
+	
+	// check for collisions with tanks, undo moves if necessary (retaining new heading)
+	// collision checking is restarted each time a tank collision is resolved until all collisions are resolved
+	
+	var collisionsResolved = false;
+	while (!collisionsResolved) {
+		collisionsResolved = true;
+	
+		for (var i=0; i<tanksAndOrders.length; i++) {
+			var tank = tanksAndOrders[i]["tank"];
+			
+			var occupySameLoc = [tank];
+			for (var j=i+1; j<tanksAndOrders.length; j++) {
+				var tank2 = tanksAndOrders[j]["tank"];
+				if (tank.getLocation().isEqual(tank2.getLocation()))
+					occupySameLoc.push(tank2);
+			}
+			
+			if (occupySameLoc.length > 1) {
+				for (var occupant in occupySameLoc) {
+					occupant.location = oldLocations[occupant];
+					occupant.immobilize();
+				}
+				collisionsResolved = false;
+				break; // restart collision resolution
+			}
+		}
+	}
+	
+	
+	// check if tanks ended up in water and immobilize them
+	for (var i=0; i<tanksAndOrders.length; i++) {
+		var tank = tanksAndOrders[i]["tank"];
+		var tile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+		
+		if (tile.immobilizes()) 
+			tank.immobilize();			
+	}
+	
+	
+	// update battlefield state with new tank locations
+	for (var tank in oldLocations) {
+		var tile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+		tile.clearUnit();
+	}
+	for (var i=0; i<tanksAndOrders.length; i++) {	
+		var tank = tanksAndOrders[i]["tank"];
+		var tile = this.battlefield[tank.getLocation().getY()][tank.getLocation().getX()];
+		tile.setUnit(tank);
+	}	
+	// move (end)
+	
+	
+	// turn turret
+	for (var i=0; i<tanksAndOrders.length; i++) {
+	
+		var orders = tanksAndOrders[i]["orders"];
+		if (!orders)
+			continue; // no orders given for this tank
+		
+		var tank = tanksAndOrders[i]["tank"];
+		
+		tank.setTurret(orders["TurretFacing"]);
+	}
+	
 };
 
 Battlefield.prototype.clearOrders = function () {
@@ -307,12 +565,19 @@ Battlefield.prototype.clearOrders = function () {
 	this.faction2Orders = "";
 };
 
-Battlefield.prototype.updateBattlefield = function () {
-
+Battlefield.prototype.clearSmoke = function () {
+	for (var y=0; y<this.battlefield.length; y++) {
+		for (var x=0; x<this.battlefield[0].length; x++) {
+			this.battlefield[y][x].setSmoke(false);
+		}
+	}
 };
 
 Battlefield.prototype.checkVictory = function () {
-	return null;
+	if (this.status == "playing")
+		return null;
+	else
+		return this.status;
 };
 
 Battlefield.prototype.sendReports = function () {
@@ -320,9 +585,9 @@ Battlefield.prototype.sendReports = function () {
 };
 
 Battlefield.prototype.tick = function () {
+	this.clearSmoke();
 	this.executeOrders();
 	this.clearOrders();
-	this.updateBattlefield();
 	var victory = this.checkVictory();
 	if (victory !== null) {
 		return victory;
