@@ -278,7 +278,7 @@ Battlefield.prototype.objectReport = function (faction) {
 				newObject["heading"] = unit.getHeading();
 				newObject["turretFacing"] = unit.getTurret();
 				newObject["speed"] = unit.getSpeed();
-			} else if (unit.getType() == "Blockhouse") [
+			} else if (unit.getType() == "Blockhouse") {
 				newObject["hits"] = 3-unit.health;
 			}
 			
