@@ -1,43 +1,37 @@
 var Faction = function (nameIn) {
 	var name = nameIn;
 	var url = "";
+	var lastResult;
 };
 
 Faction.prototype.setURl = function(urlIn) {
 	this.url = urlIn;
 };
 
-Faction.prototype.getMove = function() {
-	//console.log("getMove");
-	var move = "Empty Move";
-
+Faction.prototype.getMove = function(onSuccess) {
+	this.lastResult = null;
 	$.ajax({
 		url: this.url,
 		async: false,
 		type: "POST",
 		data: "type=move",
-		success: function(data){ 
-			//console.log(data);
-			move = data;
+		timeout: 1000,
+		success: function(data) {
+			this.lastResult = data;
+			onSuccess();
+		},
+		error: function() {
+			this.lastResult = "timeout";
 		}
 	});
-
-	return move;
 };
 
-Faction.prototype.getStart = function() {
-	var start = "No Start";
-
+Faction.prototype.getStart = function(onSuccess) {
 	$.ajax({
 		url: this.url,
 		async: false,
 		type: "POST",
 		data: "type=start",
-		success: function(data){
-			//console.log(data);
-			start = data;
-		}
+		success: onSuccess
 	});
-
-	return start;
 };

@@ -109,44 +109,50 @@ Battlefield.prototype.generateBattlefield = function () {
 };
 
 Battlefield.prototype.setupTeam = function () {
-	var obj = JSON.parse(this.faction1.getStart());
-	var newx = 0;
-	var newy = 0;
 
-	for(var i = 0; i < obj.Tanks.length; i++) {
-		var y = obj.Tanks[i].y;
-		var x = obj.Tanks[i].x
-		
-		if(x > 30) {
-			x = newx++;
-		}
-		if(y > 30) {
-			y = newy++;
-		}
-		var tankLoc = new Location(y,x);
-		var tank = new Tank(this.faction1,tankLoc , "N", "N");
-		this.faction1Tanks.push(tank);
-	}
+	this.faction1.getStart(function(data) {
+		var obj = JSON.parse(data);
+		var newx = 0;
+		var newy = 0;
 
-	var obj = JSON.parse(this.faction2.getStart());
+		for(var i = 0; i < obj.Tanks.length; i++) {
+			var y = obj.Tanks[i].y;
+			var x = obj.Tanks[i].x
+			
+			if(x > 30) {
+				x = newx++;
+			}
+			if(y > 30) {
+				y = newy++;
+			}
+			var tankLoc = new Location(y,x);
+			var tank = new Tank(this.faction1,tankLoc , "N", "N");
+			this.faction1Tanks.push(tank);
+		}	
+	});	
+	
+	this.faction2.getStart(function(data) {	
+		var obj = JSON.parse(data);
 
-	var newx = this.boardSize - 2;
-	var newy = this.boardSize - 1;
+		var newx = this.boardSize - 2;
+		var newy = this.boardSize - 1;
 
-	for(var i = 0; i < obj.Tanks.length; i++) {
-		var y = obj.Tanks[i].y;
-		var x = obj.Tanks[i].x
-		
-		if(x < this.boardSize - 30) {
-			x = newx--;
+		for(var i = 0; i < obj.Tanks.length; i++) {
+			var y = obj.Tanks[i].y;
+			var x = obj.Tanks[i].x
+			
+			if(x < this.boardSize - 30) {
+				x = newx--;
+			}
+			if(y < this.boardSize - 30) {
+				y = newy--;
+			}
+			var tankLoc = new Location(y,x);
+			var tank = new Tank(this.faction2, tankLoc, "N", "N");
+			this.faction2Tanks.push(tank);
 		}
-		if(y < this.boardSize - 30) {
-			y = newy--;
-		}
-		var tankLoc = new Location(y,x);
-		var tank = new Tank(this.faction2, tankLoc, "N", "N");
-		this.faction2Tanks.push(tank);
-	}
+	});	
+	
 };
 
 Battlefield.prototype.tankReport = function (faction) {
