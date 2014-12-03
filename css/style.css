@@ -27,7 +27,7 @@ nav {
 	height: 5%;
 }
 
-nav .fraction {
+nav .faction {
 	width: 30%;
 	float: left;
 }
@@ -41,8 +41,8 @@ nav #gen {
 	position: absolute;
 	width: 150px;
 	height: 150px;
-	margin-left: 30px;
-	margin-top: 30px;
+	right: 30px;
+	top: 50px;
 	z-index: 100;
 	box-shadow: 5px 5px 12px #000;
 	opacity: 0.5;

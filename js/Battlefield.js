@@ -49,10 +49,10 @@ Battlefield.prototype.generateBattlefield = function () {
 		for(y = 2; y < boardSize - 2; y ++){
 			for(x = 2; x < boardSize - 2; x++){
 				if(this.battlefield[x][y].getTerrain().getType() != 0){
-					this.battlefield[x - Math.floor(Math.random() * 10) % 2 ][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
-					this.battlefield[x][y - Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
-					this.battlefield[x + Math.floor(Math.random() * 10) % 2 ][y] = this.battlefield[x][y];
-					this.battlefield[x][y + Math.floor(Math.random() * 10) % 2 ] = this.battlefield[x][y];
+					this.battlefield[x - Math.floor(Math.random() * 10) % 2 ][y - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(this.battlefield[x][y].getTerrain().getType()));
+					this.battlefield[x][y - Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(this.battlefield[x][y].getTerrain().getType()));
+					this.battlefield[x + Math.floor(Math.random() * 10) % 2 ][y] = new Tile(new Terrain(this.battlefield[x][y].getTerrain().getType()));
+					this.battlefield[x][y + Math.floor(Math.random() * 10) % 2 ] = new Tile(new Terrain(this.battlefield[x][y].getTerrain().getType()));
 				}
 			}
 		}
