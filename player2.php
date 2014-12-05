@@ -5,13 +5,41 @@ if(isset($_POST['type'])) {
 		case 'start':
 		$setup = array(
 			"Tanks" => array( 
-				array("x" => 8, "y" => 10),
-				array("x" => 8, "y" => 11),
-				array("x" => 8, "y" => 12),
-				array("x" => 8, "y" => 13),
-				array("x" => 8, "y" => 14),
-				array("x" => 8, "y" => 15),
-				array("x" => 8, "y" => 16),
+				array("x" => 5,
+					"y" => 25,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 24,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 23,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 22,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 21,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 20,
+					"heading" => "N",
+					"turret" => ""
+					),
+				array("x" => 5,
+					"y" => 19,
+					"heading" => "N",
+					"turret" => ""
+					)
 				),
 			"Blockhouse" => array("x" => 20,"y" => 12 )
 			);
@@ -23,47 +51,33 @@ if(isset($_POST['type'])) {
 		$orders = array(
 			"surrender" => false,
 			"Tanks" => array(
-				array("heading" => "S",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 0,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					),
-				array("heading" => "n",
-					"speed" => 2,
-					"TurretFacing" => "nw",
-					"X" => 2,
-					"Y" => 5
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N"
 					)
 				)
 			);

@@ -70,6 +70,8 @@ Tank.prototype.getSpeed = function () {
 Tank.prototype.setSpeed = function (new_speed) {
     if (new_speed > this.speed) {
         this.speed += 1;
+    } else if(this.speed === new_speed) {
+        this.speed = new_speed;
     } else {
         this.speed -= 1;
     }
