@@ -13,8 +13,21 @@ Game.prototype.tick = function() {
 	this.battlefield.executeOrders();
 	this.battlefield.clearOrders();
 
+	console.log(this.battlefield.objectReport(this.battlefield.faction1));
 	
-	
+	$('#f1').html("<div>Team 1: </div>");
+	for(var i = 0; i < this.battlefield.faction1Tanks.length; i++ ) {
+		if(!this.battlefield.faction1Tanks[i].isDestroyed()) {
+			$('#f1').html($('#f1').html() + "<img src='img/red_tank.png' height='10' style='margin: 2% 2% 2% 2%;'/>" );
+		}
+	}
+
+	$('#f2').html("<div>Team 2: </div>");
+	for(var i = 0; i < this.battlefield.faction2Tanks.length; i++ ) {
+		if(!this.battlefield.faction2Tanks[i].isDestroyed()) {
+			$('#f2').html($('#f2').html() + "<img src='img/blue_tank.png' height='10' style='margin: 2% 2% 2% 2%;'/>" );
+		}
+	}
 };
 
 Game.prototype.init = function(faction1, faction2) {
@@ -28,8 +41,9 @@ Game.prototype.init = function(faction1, faction2) {
 	function timer() {
 		rerender = true;
 
-		$("#move").html(moveCount++);
+		$("#gen").html(moveCount++);
 		game.tick();
+
 		tid = setTimeout(timer, 1000);
 	}
 };

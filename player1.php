@@ -53,31 +53,59 @@ if(isset($_POST['type'])) {
 			"Tanks" => array(
 				array("heading" => "N",
 					"speed" => 0,
-					"TurretFacing" => "N"
-					),
-				array("heading" => "NE",
-					"speed" => 1,
-					"TurretFacing" => "N"
-					),
-				array("heading" => "N",
-					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
+					),
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
+					),
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
 					)
 				)
 			);

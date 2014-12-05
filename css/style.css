@@ -1,5 +1,6 @@
 * {
 	float: left;
+	font-family: arial;
 }
 
 .canvasContainer {
@@ -32,9 +33,14 @@ nav .faction {
 	float: left;
 }
 
+nav .faction img {
+	margin: 5px 5px 5px 5px;
+}
+
 nav #gen {
 	width: 40%;
 	float: left;
+	text-align: center;
 }
 
 #mapCanvas {

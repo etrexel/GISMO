@@ -53,31 +53,59 @@ if(isset($_POST['type'])) {
 			"Tanks" => array(
 				array("heading" => "N",
 					"speed" => 0,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					),
 				array("heading" => "N",
 					"speed" => 1,
-					"TurretFacing" => "N"
+					"TurretFacing" => "N",
+					"fireAt" => array(
+						"X" => 200,
+						"Y" => 200
+						) 
 					)
 				)
 			);

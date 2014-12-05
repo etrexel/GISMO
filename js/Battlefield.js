@@ -260,8 +260,6 @@ Battlefield.prototype.objectReport = function (faction) {
 		tanks = this.faction2Tanks;
 		enemyTanks = this.faction1Tanks;
 	}
-	if (!tanks)
-		return; // invalid faction param
 	
 	var dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
 	
@@ -281,11 +279,12 @@ Battlefield.prototype.objectReport = function (faction) {
 	
 	var visibleObjects = {};
 	
-	for (var tank in tanks) {
-		var tankX = tank.location.getX();
-		var tankY = tank.location.getY();
-		var facing = tank.getFacing();
-		var turret = tank.getTurret();
+
+	for(var i = 0; i < tanks.length; i++) {
+		var tankX = tanks[i].location.getX();
+		var tankY = tanks[i].location.getY();
+		var facing = tanks[i].getHeading();
+		var turret = tanks[i].getHeading();
 		
 		var scope = [];
 		scope.push(dirs[(dirs.indexOf(turret)+7)%8]); // the wedge one counter-clockwise of the turret
@@ -294,38 +293,39 @@ Battlefield.prototype.objectReport = function (faction) {
 		if (scope.indexOf(facing) == -1)
 			turret.push(facing); // the wedge the tank is facing
 
-		for (var obj in objects) {
+		for( var j = 0; j < objects.length; j++ ) {
 			// each obj represents a tile which can have both smoke and a unit
 			// determine if location itself is visible
 
-			var objX = obj["x"];
-			var objY = obj["y"];
-			var tile = obj["tile"];
+			var objX = objects[j]["x"];
+			var objY = objects[j]["y"];
+			var tile = objects[j]["tile"];
 			
 			// can a tank see smoke on itself? does it need to?
-			if (tile.getUnit() === tank)
+			if (tile.getUnit() === tanks[i])
 				continue; // the object is itself, skip
 			
 			var blocked = this.inLineOfSight(tankX, tankY, objX, objY, scope);
 			
 			if (!blocked) {
-				if (!visibleObjects[obj])
-					visibleObjects[obj] = [];
-				visibleObjects[obj].push(tank);
+				if (!visibleObjects[objects[j]])
+					visibleObjects[objects[j]] = [];
+				visibleObjects[objects[j]].push(tanks[i]);
 			}
 		}
+		console.log(scope);
 	}
 	
 	var objectReportObjects = [];
-	for (var obj in visibleObjects) {
-		var x = obj["x"];
-		var y = obj["y"];
-		var seenBy = visibleObjects[obj];
+	for (var i = 0; i < visibleObjects.length; i ++ ) {
+		var x = visibleObjects[i]["x"];
+		var y = visibleObjects[i]["y"];
+		var seenBy = visibleObjects[visibleObjects[i]];
 		var seenByIndeces = [];
 		for (var tank in seenBy) {
-			seenByIndeces.push[tanks.indexOf(tank)];
+			seenByIndeces.push[tanks.indexOf(tanks[i])];
 		}
-		if (obj["tile"].hasSmoke()) {
+		if (visibleObjects[i]["tile"].hasSmoke()) {
 			// add to report => smoke at (x,y) seen by seenBy
 			var newObject = {
 				"type": "Smoke",
@@ -335,7 +335,7 @@ Battlefield.prototype.objectReport = function (faction) {
 			};			
 			objectReportObjects.push(newObject);
 		}
-		var unit = obj["tile"].getUnit();
+		var unit = visibleObjects[i]["tile"].getUnit();
 		if (unit) {
 			var newObject = {
 				"type": unit.getType(),
