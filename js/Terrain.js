@@ -41,6 +41,10 @@ Terrain.prototype.immobilizes = function() {
 	return this.type === 2; // water immobilizes tanks
 };
 
+Terrain.prototype.slows = function() {
+	return this.type === 1; // forests slow tanks
+};
+
 Terrain.prototype.canFire = function () {
     return this.fire_thru;
 };
