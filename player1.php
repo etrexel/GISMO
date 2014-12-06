@@ -6,19 +6,19 @@ if(isset($_POST['type'])) {
 		$setup = array(
 			"Tanks" => array( 
 				array("x" => 5,
-					"y" => 25,
-					"heading" => "N",
-					"turret" => ""
-					),
-				array("x" => 5,
 					"y" => 24,
+					"heading" => "S",
+					"turret" => "E"
+					),
+				array("x" => 8,
+					"y" => 25,
 					"heading" => "N",
 					"turret" => ""
 					),
 				array("x" => 5,
 					"y" => 23,
 					"heading" => "N",
-					"turret" => ""
+					"turret" => "E"
 					),
 				array("x" => 5,
 					"y" => 22,
@@ -35,8 +35,8 @@ if(isset($_POST['type'])) {
 					"heading" => "N",
 					"turret" => ""
 					),
-				array("x" => 5,
-					"y" => 19,
+				array("x" => 19,
+					"y" => 23,
 					"heading" => "N",
 					"turret" => ""
 					)
@@ -53,10 +53,26 @@ if(isset($_POST['type'])) {
 			"Tanks" => array(
 				array("heading" => "N",
 					"speed" => 0,
+					"TurretFacing" => "E",
+					"fireAt" => array(
+						"X" => 20,
+						"Y" => 20
+						) 
+					),
+				array("heading" => "N",
+					"speed" => 0,
 					"TurretFacing" => "N",
 					"fireAt" => array(
 						"X" => 20,
 						"Y" => 20
+						) 
+					),
+				array("heading" => "N",
+					"speed" => 1,
+					"TurretFacing" => "E",
+					"fireAt" => array(
+						"X" => 19,
+						"Y" => 23
 						) 
 					),
 				array("heading" => "N",
@@ -79,28 +95,12 @@ if(isset($_POST['type'])) {
 					"speed" => 1,
 					"TurretFacing" => "N",
 					"fireAt" => array(
-						"X" => 20,
-						"Y" => 20
+						"X" => 5,
+						"Y" => 5
 						) 
 					),
 				array("heading" => "N",
-					"speed" => 1,
-					"TurretFacing" => "N",
-					"fireAt" => array(
-						"X" => 20,
-						"Y" => 20
-						) 
-					),
-				array("heading" => "N",
-					"speed" => 1,
-					"TurretFacing" => "N",
-					"fireAt" => array(
-						"X" => 20,
-						"Y" => 20
-						) 
-					),
-				array("heading" => "N",
-					"speed" => 1,
+					"speed" => 0,
 					"TurretFacing" => "N",
 					"fireAt" => array(
 						"X" => 20,

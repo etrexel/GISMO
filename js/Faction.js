@@ -1,6 +1,6 @@
 var Faction = function (nameIn) {
-	var name = nameIn;
-	var url = "";
+	this.name = nameIn;
+	this.url = "";
 };
 
 Faction.prototype.setURl = function(urlIn) {
@@ -41,3 +41,13 @@ Faction.prototype.getStart = function() {
 
 	return start;
 };
+
+
+Faction.prototype.sendReports = function(reports) {
+	$.ajax({
+		url: this.url,
+		async: false,
+		type: "POST",
+		data: {type: "reports", data: JSON.stringify(reports)}
+	});
+}

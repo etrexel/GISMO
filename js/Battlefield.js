@@ -12,8 +12,8 @@ var Battlefield = function (first_faction, second_faction) {
 	this.changedDirection = [];
 	this.faction1Orders = "";
 	this.faction2Orders = "";
-	this.faction1Reports = "";
-	this.faction2Reports = "";
+	this.faction1Reports;
+	this.faction2Reports;
 	this.boardSize = 250;
 	
 	this.status = "playing";
@@ -93,9 +93,16 @@ Battlefield.prototype.generateBattlefield = function () {
 	this.battlefield[5][5] = blockhouse1Tile;
 	this.battlefield[boardSize - 5 - 1][boardSize - 5 - 1] = blockhouse2Tile;
 	
+	/*
 	// smoke test
-	//this.battlefield[0][7].setSmoke(true);
-
+	this.battlefield[24][8].setSmoke(true);
+	
+	// visibility test
+	this.battlefield[6][6].terrain = new Terrain(3);
+	this.battlefield[5][6].terrain = new Terrain(3);
+	this.battlefield[7][6].terrain = new Terrain(3);
+	*/
+	
 	//populate tanks
 	for(var i = 0; i < this.faction1Tanks.length; i++) {
 		this.battlefield[this.faction1Tanks[i].location.y][this.faction1Tanks[i].location.x].setUnit(this.faction1Tanks[i]);
@@ -158,46 +165,80 @@ Battlefield.prototype.setupTeam = function () {
 };
 
 Battlefield.prototype.tankReport = function (faction) {
-
+	// ignoring some flags that arent really needed for this implementation
+	var flags = {};
+	var tanks;
+	if (faction == this.faction1) {
+		flags["BLOCK"] = 3-this.faction1Blockhouse.getHealth();
+		tanks = this.faction1Tanks;
+	} else if (faction == this.faction2) {
+		flags["BLOCK"] = 3-this.faction2Blockhouse.getHealth();
+		tanks = this.faction2Tanks;
+	}
+	
+	var tankList = [];
+	
+	for (var i=0; i<tanks.length; i++) {
+		var tank = tanks[i];
+		
+		// ignoring some fields for simplicity's sake
+		tankList.push({
+			"heading": tank.getHeading(),
+			"TurretFacing": tank.getTurret(),
+			"speed": tank.getSpeed(),
+			"x": tank.getLocation().getX(),
+			"y": tank.getLocation().getY(),
+			"health": tank.getHealth(),
+			"rounds": tank.rounds
+		});			
+	}
+	
+	return {
+		"flags": flags,
+		"tanks": tankList
+	};	
 };
 
 Battlefield.prototype.inScope = function(x1, y1, x2, y2, scope) {
 	var dx = x2 - x1;
 	var dy = y2 - y1;
-
+	dy = -dy; // to make the GISMO doc algorithm work in this environment where 0,0 is the top left corner
+	//console.log(dx, dy);
 	var inView = false;
-	for (var wedge in scope) {
+	for (var i=0; i<scope.length; i++) {
 		if (inView)
 			break;
-		switch (wedge) {
+		switch (scope[i]) {
 			case "N":
-			if (dy >= -2*dx && dy >= 2*dx) inView = true;
-			break;
+				if (dy >= -2*dx && dy >= 2*dx) inView = scope[i];
+				break;
 			case "NE":
-			if (dy <= 2*dx && 2*dy >= dx) inView = true;
-			break;
+				if (dy <= 2*dx && 2*dy >= dx) inView = scope[i];
+				break;
 			case "E":
-			if (2*dy <= dx && 2*dy >= -dx) inView = true;
-			break;
+				if (2*dy <= dx && 2*dy >= -dx) inView = scope[i];
+				break;
 			case "SE":
-			if (2*dy <= -dx && dy >= -2*dx) inView = true;
-			break;
+				if (2*dy <= -dx && dy >= -2*dx) inView = scope[i];
+				break;
 			case "S":
-			if (dy <= -2*dx && dy <= 2*dx) inView = true;
-			break;
+				if (dy <= -2*dx && dy <= 2*dx) inView = scope[i];
+				break;
 			case "SW":
-			if (2*dy <= dx && dy >= 2*dx) inView = true;
-			break;
+				if (2*dy <= dx && dy >= 2*dx) inView = scope[i];
+				break;
 			case "W":
-			if (2*dy >= dx && 2*dy <= -dx) inView = true;
-			break;
+				if (2*dy >= dx && 2*dy <= -dx) inView = scope[i];
+				break;
 			case "NW":
-			if (2*dy >= -dx && dy <= -2*dx) inView = true;
-			break;
+				if (2*dy >= -dx && dy <= -2*dx) inView = scope[i];
+				break;
 		}
 	}
+	
+	//console.log(inView);
 
-	return inView;
+	return !!inView;
 }
 
 Battlefield.prototype.inLineOfSight = function(x1, y1, x2, y2, scope) {
@@ -224,8 +265,10 @@ Battlefield.prototype.inLineOfSight = function(x1, y1, x2, y2, scope) {
 				var xOffset = dx >= 0 ? x : -x;
 				var yOffset = dy >= 0 ? y : -y;
 				var tile = this.battlefield[y1+yOffset][x1+xOffset];
-				if (!tile.getTerrain().canSee())
+				if (!tile.getTerrain().canSee()) {
+					//console.log(x1, y1, x2, y2, scope, "blocked at", y1+yOffset, x1+xOffset);
 					blocked = true;
+				}
 				x++;
 			}					
 
@@ -240,8 +283,10 @@ Battlefield.prototype.inLineOfSight = function(x1, y1, x2, y2, scope) {
 				var xOffset = dx >= 0 ? x : -x;
 				var yOffset = dy >= 0 ? y : -y;
 				var tile = this.battlefield[y1+yOffset][x1+xOffset];
-				if (!tile.getTerrain().canSee())
+				if (!tile.getTerrain().canSee()) {
+					//console.log(x1, y1, x2, y2, scope, "blocked at", y1+yOffset, x1+xOffset);
 					blocked = true;
+				}
 				y++;
 			}
 			
@@ -280,26 +325,24 @@ Battlefield.prototype.objectReport = function (faction) {
 				objects.push({
 					"x": x,
 					"y": y,
-					"tile": tile				
+					"tile": tile,
+					"seenBy": []
 				});
 		}
 	}	
 	
-	var visibleObjects = {};
-	
-
 	for(var i = 0; i < tanks.length; i++) {
-		var tankX = tanks[i].location.getX();
-		var tankY = tanks[i].location.getY();
+		var tankX = tanks[i].getLocation().getX();
+		var tankY = tanks[i].getLocation().getY();
 		var facing = tanks[i].getHeading();
-		var turret = tanks[i].getHeading();
+		var turret = tanks[i].getTurret();
 		
 		var scope = [];
 		scope.push(dirs[(dirs.indexOf(turret)+7)%8]); // the wedge one counter-clockwise of the turret
 		scope.push(turret); // the wedge the turret is facing
 		scope.push(dirs[(dirs.indexOf(turret)+1)%8]); // the wedge one clockwise of the turret
 		if (scope.indexOf(facing) == -1)
-			turret.push(facing); // the wedge the tank is facing
+			scope.push(facing); // the wedge the tank is facing
 
 		for( var j = 0; j < objects.length; j++ ) {
 			// each obj represents a tile which can have both smoke and a unit
@@ -313,43 +356,44 @@ Battlefield.prototype.objectReport = function (faction) {
 			if (tile.getUnit() === tanks[i])
 				continue; // the object is itself, skip
 			
-			var blocked = this.inLineOfSight(tankX, tankY, objX, objY, scope);
+			var visible = this.inLineOfSight(tankX, tankY, objX, objY, scope);
 			
-			if (!blocked) {
-				if (!visibleObjects[objects[j]])
-					visibleObjects[objects[j]] = [];
-				visibleObjects[objects[j]].push(tanks[i]);
-			}
+			if (visible)		
+				objects[j]["seenBy"].push(tanks[i]);
 		}
-		console.log(scope);
 	}
 	
 	var objectReportObjects = [];
-	for (var i = 0; i < visibleObjects.length; i ++ ) {
-		var x = visibleObjects[i]["x"];
-		var y = visibleObjects[i]["y"];
-		var seenBy = visibleObjects[visibleObjects[i]];
+	for (var i = 0; i < objects.length; i ++ ) {
+		var x = objects[i]["x"];
+		var y = objects[i]["y"];
+		var seenBy = objects[i]["seenBy"];
+		if (seenBy.length == 0)
+			continue; // no tank saw this object		
+			
 		var seenByIndeces = [];
-		for (var tank in seenBy) {
-			seenByIndeces.push[tanks.indexOf(tanks[i])];
+		for (var j=0; j<seenBy.length; j++) {
+			seenByIndeces.push(tanks.indexOf(seenBy[j]));
 		}
-		if (visibleObjects[i]["tile"].hasSmoke()) {
+		if (objects[i]["tile"].hasSmoke()) {
 			// add to report => smoke at (x,y) seen by seenBy
 			var newObject = {
 				"type": "Smoke",
 				"x": x,
 				"y": y,
-				"seenBy": seenByIndeces
+				"seenBy": seenByIndeces,
+				"seenByObj": seenBy
 			};			
 			objectReportObjects.push(newObject);
 		}
-		var unit = visibleObjects[i]["tile"].getUnit();
+		var unit = objects[i]["tile"].getUnit();
 		if (unit) {
 			var newObject = {
 				"type": unit.getType(),
 				"x": x,
 				"y": y,
 				"seenBy": seenByIndeces,
+				"seenByObj": seenBy
 			};
 			
 			if (unit.getType() == "Tank") {
@@ -375,24 +419,31 @@ Battlefield.prototype.objectReport = function (faction) {
 Battlefield.prototype.generateReports = function () {
 	var tankReport = this.tankReport(this.faction1);
 	var objectReport = this.objectReport(this.faction1);
-	this.faction1Reports = tankReport + objectReport;
+	this.faction1Reports = {
+		"tankReport": tankReport,
+		"objectReport": objectReport
+	};
+	
 	tankReport = this.tankReport(this.faction2);
 	objectReport = this.objectReport(this.faction2);
-	this.faction2Reports = tankReport + objectReport;
+	this.faction2Reports = {
+		"tankReport": tankReport,
+		"objectReport": objectReport
+	};
 };
 
 Battlefield.prototype.getTileInDirection = function(x, y, dir, flip) {
 	var xOffset = 0;
 	var yOffset = 0;
 	
-	if (dir.search("E") == 1)
+	if (dir.search("E") != -1)
 		xOffset = 1;
-	else if (dir.search("W") == 1)
+	else if (dir.search("W") != -1)
 		xOffset = -1;
 	
-	if (dir.search("N") == 1)
+	if (dir.search("N") != -1)
 		yOffset = -1;
-	else if (dir.search("S") == 1)
+	else if (dir.search("S") != -1)
 		yOffset = 1;
 		
 	if (flip) {
@@ -406,20 +457,18 @@ Battlefield.prototype.getTileInDirection = function(x, y, dir, flip) {
 Battlefield.prototype.executeOrders = function () {
 	var orders1 = JSON.parse(this.faction1Orders);
 	var orders2 = JSON.parse(this.faction2Orders);
-
-	/*
+	
 	// check for surrender
 	if (orders1["surrender"] && orders1["surrender"]) {
-		this.status = "Draw (both surrendered)";
+		this.status = "Draw! (both surrendered)";
 		return;
 	} else if (orders1["surrender"]) {
-		this.status = this.faction2 + " wins (opponent surrendered)";
+		this.status = this.faction2.name + " wins! (opponent surrendered)";
 		return;
 	} else if (orders2["surrender"]) {
-		this.status = this.faction1 + " wins (opponent surrendered)";
+		this.status = this.faction1.name + " wins! (opponent surrendered)";
 		return;
-	}	
-	*/
+	}		
 	
 	// put all orders into one array for easy traversal
 	var tanksAndOrders = [];
@@ -443,7 +492,7 @@ Battlefield.prototype.executeOrders = function () {
 	}
 	
 	// fire
-	/*
+	
 	for (var i=0; i<tanksAndOrders.length; i++) {
 
 		var orders = tanksAndOrders[i]["orders"];
@@ -452,56 +501,63 @@ Battlefield.prototype.executeOrders = function () {
 		
 		var tank = tanksAndOrders[i]["tank"];
 
-		var x = orders["X"];
-		var y = orders["Y"];
-		if (x && y) {
-			var targetTile = this.battlefield[y][x];
-			var target = targetTile.getUnit();
-			if (target
-				&& tank.gunReady()
-				&& tank.canFire() 
-				&& this.inScope(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()])) {
-				
-				tank.fire();
-				tank.reload();
+		var fireAt = orders["fireAt"];
+		if (fireAt) {
+			var x = fireAt["X"];
+			var y = fireAt["Y"];
+			if (x && y) {
+				var targetTile = this.battlefield[y][x];
+				var target = targetTile.getUnit();
+				if (target
+					&& tank.gunReady()
+					&& tank.canFire() 
+					&& this.inScope(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()])) {
+					
+					tank.fire();
+					tank.reload();
 
-				var turretSmokeTile = this.getTileInDirection(tank.getLocation().getX(), tank.getLocation().getY(), tank.getTurret());				
-				turretSmokeTile.setSmoke(true);
+					var turretSmokeTile = this.getTileInDirection(tank.getLocation().getX(), tank.getLocation().getY(), tank.getTurret());				
+					turretSmokeTile.setSmoke(true);
 
-				var damage;
-				if (!this.inLineOfSight(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()]))
-					damage = 0;
-				else
-					damage = this.toHit(tank, target);
+					var damage;
+					if (!this.inLineOfSight(tank.getLocation().getX(), tank.getLocation().getY(), x, y, [tank.getTurret()]))
+						damage = 0;
+					else
+						damage = this.toHit(tank, target);
 
-				if (damage > 0) {
-					if (target.getType() == "Blockhouse") 
-						target.hit(1);
-					else if (target.getType() == "Tank") 
-						target.hit(damage);		
+					if (damage > 0) {
+						if (target.getType() == "Blockhouse") 
+							damage = 1;
 
-					var hitSmokeTile = this.getTileInDirection(x, y, tank.getTurret(), true);
-					hitSmokeTile.setSmoke(true);
-				}				
+						var targetWasDead = target.getHealth() == 0;
+						target.hit(damage);
+
+						console.log(target.getType(), "at", x, y, "hit by tank at", tank.getLocation().getX(), tank.getLocation().getY(), "for", damage, "damage");
+						if (target.getHealth() == 0 && !targetWasDead)
+							console.log(target.getType(), "at", x, y, "destroyed by tank at", tank.getLocation().getX(), tank.getLocation().getY());
+						
+						var hitSmokeTile = this.getTileInDirection(x, y, tank.getTurret(), true);
+						hitSmokeTile.setSmoke(true);
+					}				
+				}
 			}
 		}
 		
-	}
-	*/
+	}	
 
 	// all tanks have fired, check blockhouse status
-	/*
+	
 	var blockhouse1Health = this.faction1Blockhouse.getHealth();
 	var blockhouse2Health = this.faction2Blockhouse.getHealth();
 	
 	if (blockhouse1Health == 0 && blockhouse2Health == 0) {
-		this.status = "Draw (both blockhouses destroyed)";
+		this.status = "Draw! (both blockhouses destroyed)";
 		return;
 	} else if (blockhouse1Health == 0) {
-		this.status = this.faction2 + " wins (opponent blockhouse destroyed)";
+		this.status = this.faction2.name + " wins! (opponent blockhouse destroyed)";
 		return;
 	} else if (blockhouse2Health == 0) {
-		this.status = this.faction1 + " wins (opponent blockhouse destroyed)";
+		this.status = this.faction1.name + " wins! (opponent blockhouse destroyed)";
 		return;
 	}
 	
@@ -522,16 +578,15 @@ Battlefield.prototype.executeOrders = function () {
 	}
 	
 	if (!faction1Alive && !faction2Alive) {
-		this.status = "Draw (all tanks destroyed)";
+		this.status = "Draw! (all tanks destroyed)";
 		return;
 	} else if (!faction1Alive) {
-		this.status = this.faction2 + " wins (opponent tanks destroyed)";
+		this.status = this.faction2.name + " wins! (opponent tanks destroyed)";
 		return;
 	} else if (!faction2Alive) {
-		this.status = this.faction1 + " wins (opponent tanks destroyed)";
+		this.status = this.faction1.name + " wins! (opponent tanks destroyed)";
 		return;
-	}
-	*/
+	}	
 
 	// change speed
 	
@@ -554,8 +609,7 @@ Battlefield.prototype.executeOrders = function () {
 	// move (start)
 	// currently using simplified logic: tanks moving at speed 2 essentially skip 1 space without actually traveling through it
 	// this means tanks can sometimes move through other tanks or through single mountain and water tiles
-	// tanks can also move through each other as long as they dont ever stop on the same tile
-	
+	// tanks can also move through each other as long as they dont ever stop on the same tile	
 		
 	// move all tanks without checking for collisions
 	for (var i=0; i<tanksAndOrders.length; i++) {
@@ -567,8 +621,7 @@ Battlefield.prototype.executeOrders = function () {
 		var tank = tanksAndOrders[i]["tank"];
 		
 		tank.move(orders["heading"]);
-	}
-	
+	}	
 	
 	//check for collisions with terrain/blockhouses or edge of board, undo move if necessary (retaining new heading)
 	for (var i=0; i<tanksAndOrders.length; i++) {
@@ -586,13 +639,10 @@ Battlefield.prototype.executeOrders = function () {
 			}
 			
 		}
-	}	
-	
+	}		
 	
 	// check for collisions with tanks, undo moves if necessary (retaining new heading)
-	// collision checking is restarted each time a tank collision is resolved until all collisions are resolved
-	
-	
+	// collision checking is restarted each time a tank collision is resolved until all collisions are resolved	
 	var collisionsResolved = false;
 	var iterations = 0;
 	while (!collisionsResolved) {
@@ -622,9 +672,7 @@ Battlefield.prototype.executeOrders = function () {
 				break; // restart collision resolution
 			}
 		}
-	}
-	
-	
+	}	
 	
 	// check if tanks ended up in water and immobilize them
 	// check if tanks ended up in forest and slow them
@@ -635,10 +683,8 @@ Battlefield.prototype.executeOrders = function () {
 		
 		// water check
 		if (tile.getTerrain().immobilizes()) 
-			tank.immobilize();
-		
-	}
-	
+			tank.immobilize();		
+	}	
 	
 	// update battlefield state with new tank locations
 	for (var i=0; i<tanksAndOrders.length; i++) {
@@ -652,9 +698,6 @@ Battlefield.prototype.executeOrders = function () {
 		tile.setUnit(tank);
 	}	
 	 //move (end)
-	
-	
-	
 
 	
 	// turn turret
@@ -693,7 +736,8 @@ Battlefield.prototype.checkVictory = function () {
 };
 
 Battlefield.prototype.sendReports = function () {
-
+	this.faction1.sendReports(this.faction1Reports);
+	this.faction2.sendReports(this.faction2Reports);
 };
 
 Battlefield.prototype.tick = function () {
@@ -708,17 +752,18 @@ Battlefield.prototype.tick = function () {
 	this.sendReports();
 	return null;
 };
-
+ 
 Battlefield.prototype.toHit = function (attacker, defender) {
-	var Dx = defender.getLocation().getX() - attacker.getLocation.getX();
-	var Dy = defender.getLocation().getY() - attacker.getLocation.getY();
-	var D = Dx*Dx + Dy*Dy;
+	var Dx = defender.getLocation().getX() - attacker.getLocation().getX();
+	var Dy = defender.getLocation().getY() - attacker.getLocation().getY();
+	var D = Math.sqrt(Dx*Dx + Dy*Dy);
 	var probability;
 	if (D > 100) {
 		return 0;
-	} else {
+	} else {	
 		probability = Math.round(100 * Math.exp(-0.0003 * D) - 5);
 
+		/*
 		switch (attacker.getSpeed()) {
 			case -1:
 			case 1:
@@ -771,6 +816,7 @@ Battlefield.prototype.toHit = function (attacker, defender) {
         if (probability > 95) {
         	probability = 95;
         }
+		*/
 
         var rand = Math.random() % 101;
         if (rand <= probability) {
