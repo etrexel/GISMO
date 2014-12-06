@@ -381,8 +381,7 @@ Battlefield.prototype.objectReport = function (faction) {
 				"type": "Smoke",
 				"x": x,
 				"y": y,
-				"seenBy": seenByIndeces,
-				"seenByObj": seenBy
+				"seenBy": seenByIndeces
 			};			
 			objectReportObjects.push(newObject);
 		}
@@ -392,8 +391,7 @@ Battlefield.prototype.objectReport = function (faction) {
 				"type": unit.getType(),
 				"x": x,
 				"y": y,
-				"seenBy": seenByIndeces,
-				"seenByObj": seenBy
+				"seenBy": seenByIndeces
 			};
 			
 			if (unit.getType() == "Tank") {
